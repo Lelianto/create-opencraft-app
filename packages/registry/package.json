@@ -1,5 +1,5 @@
 {
-  "name":"@antihero/registry","version":"0.1.0","type":"module","license":"MIT","main":"dist/src/index.js","types":"dist/src/index.d.ts","exports":{".":"./dist/src/index.js"},"files":["dist","registry"],
+  "name":"@antihero/registry","version":"0.1.1","type":"module","license":"MIT","main":"dist/src/index.js","types":"dist/src/index.d.ts","exports":{".":"./dist/src/index.js"},"files":["dist","registry","README.md"],
   "scripts":{"build":"tsc -p tsconfig.build.json && rm -rf registry && cp -R ../../registry registry","type-check":"tsc -p tsconfig.json --pretty false","lint":"eslint src test","test":"vitest run","test:unit":"vitest run"},
   "dependencies":{"@antihero/config":"workspace:*","@antihero/shared":"workspace:*","diff":"8.0.2","zod":"4.1.5"},
   "devDependencies":{"@types/node":"20.19.9","typescript":"6.0.3","vitest":"4.1.10"}
