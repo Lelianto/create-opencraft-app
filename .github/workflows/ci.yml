@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: Verify & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate Registry Manifests
+        run: npm run registry:validate
+
+      - name: Run Monorepo Lint, Type-Check & Tests
+        run: pnpm run verify
+
+      - name: Build Monorepo Packages
+        run: pnpm run build
+
+      - name: Verify Package Tarballs
+        run: npm run pack:check

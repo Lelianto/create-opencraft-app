@@ -1,0 +1,44 @@
+name: Publish to NPM
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "NPM Tag (default: latest)"
+        required: false
+        default: "latest"
+
+jobs:
+  publish:
+    name: Publish Packages to NPM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          registry-url: "https://registry.npmjs.org/"
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Verification & Tests
+        run: pnpm run verify
+
+      - name: Build Monorepo Packages
+        run: pnpm run build
+
+      - name: Publish Packages to NPM
+        run: pnpm publish -r --access public --no-git-checks --tag ${{ github.event.inputs.tag || 'latest' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
