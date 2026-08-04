@@ -1,5 +1,5 @@
 {
-  "name":"create-opencraft-app","version":"0.1.0","description":"Create a modular, security-first Next.js app","type":"module","license":"MIT","bin":{"create-opencraft-app":"dist/src/bin.js"},"files":["dist","README.md"],
+  "name":"create-opencraft-app","version":"0.1.1","description":"Create a modular, security-first Next.js app","type":"module","license":"MIT","bin":{"create-opencraft-app":"dist/src/bin.js"},"files":["dist","README.md"],
   "scripts":{"build":"tsc -p tsconfig.build.json && chmod +x dist/src/bin.js","type-check":"tsc -p tsconfig.json --pretty false","lint":"eslint src","test":"vitest run --passWithNoTests","test:unit":"vitest run --passWithNoTests"},
   "dependencies":{"@clack/prompts":"0.11.0","@antihero/cli":"workspace:*","@antihero/config":"workspace:*","@antihero/shared":"workspace:*","commander":"14.0.0"},
   "devDependencies":{"@types/node":"20.19.9","typescript":"6.0.3","vitest":"4.1.10"}

@@ -1,5 +1,5 @@
 {
-  "name":"@antihero/cli","version":"0.1.0","type":"module","license":"MIT","main":"dist/src/index.js","types":"dist/src/index.d.ts","bin":{"opencraft":"dist/src/bin.js"},"exports":{".":"./dist/src/index.js"},"files":["dist","templates","registry","README.md"],
+  "name":"@antihero/cli","version":"0.1.1","type":"module","license":"MIT","main":"dist/src/index.js","types":"dist/src/index.d.ts","bin":{"opencraft":"dist/src/bin.js"},"exports":{".":"./dist/src/index.js"},"files":["dist","templates","registry","README.md"],
   "scripts":{"build":"tsc -p tsconfig.build.json && chmod +x dist/src/bin.js && rm -rf templates registry && cp -R ../../templates templates && cp -R ../../registry registry","type-check":"tsc -p tsconfig.json --pretty false","lint":"eslint src test","test":"vitest run --passWithNoTests","test:unit":"vitest run --passWithNoTests","test:integration":"vitest run test/integration.test.ts"},
   "dependencies":{"@clack/prompts":"0.11.0","@antihero/config":"workspace:*","@antihero/registry":"workspace:*","@antihero/shared":"workspace:*","commander":"14.0.0"},
   "devDependencies":{"@types/node":"20.19.9","typescript":"6.0.3","vitest":"4.1.10"}
