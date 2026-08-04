@@ -1,0 +1,16 @@
+{
+  "name": "audit-log",
+  "version": "1.0.0",
+  "description": "Secret-redacting audit logger for security-sensitive operations",
+  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "dependencies": [],
+  "npmDependencies": {},
+  "npmDevDependencies": {},
+  "environmentVariables": [],
+  "files": {
+    "atomic": [{ "source": "templates/audit-log.ts", "target": "{{aliases.infrastructure}}/audit-log.ts" }],
+    "feature": [{ "source": "templates/audit-log.ts", "target": "{{aliases.infrastructure}}/audit-log.ts" }],
+    "hybrid": [{ "source": "templates/audit-log.ts", "target": "{{aliases.infrastructure}}/audit-log.ts" }]
+  },
+  "instructions": ["The default sink prints to stdout only; connect a durable store for production. It redacts known secret keys before writing, but never pass secrets in metadata."]
+}

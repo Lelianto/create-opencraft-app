@@ -1,0 +1,8 @@
+packages:
+  - "packages/*"
+  - "apps/*"
+  - "!apps/docs"
+
+# Generated projects live under templates/ and registry/ as inert source files.
+# They must never be linked into the workspace graph.
+ignoredBuiltDependencies: []

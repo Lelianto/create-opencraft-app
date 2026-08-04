@@ -1,0 +1,1 @@
+import{z}from"zod";export const productInputSchema=z.object({name:z.string().trim().min(1).max(120),description:z.string().trim().max(2_000).nullable(),price:z.number().nonnegative().max(1_000_000)}).strict();export interface Product{id:string;name:string;description:string|null;price:number;imageUrl:string|null;ownerId:string;createdAt:string;updatedAt:string}

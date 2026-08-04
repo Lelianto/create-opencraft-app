@@ -1,0 +1,29 @@
+{
+  "name": "protected-routes",
+  "version": "1.0.0",
+  "description": "Route Handler auth guard and Supabase middleware for protected paths",
+  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedBackends": ["supabase", "firebase"],
+  "dependencies": ["api-response"],
+  "npmDependencies": {},
+  "npmDevDependencies": {},
+  "environmentVariables": [],
+  "files": {
+    "atomic": [
+      { "source": "templates/protected-route.ts", "target": "src/app/api/protected/route.ts" },
+      { "source": "templates/middleware.ts", "target": "middleware.ts", "when": { "backend": ["supabase"] } }
+    ],
+    "feature": [
+      { "source": "templates/protected-route.ts", "target": "src/app/api/protected/route.ts" },
+      { "source": "templates/middleware.ts", "target": "middleware.ts", "when": { "backend": ["supabase"] } }
+    ],
+    "hybrid": [
+      { "source": "templates/protected-route.ts", "target": "src/app/api/protected/route.ts" },
+      { "source": "templates/middleware.ts", "target": "middleware.ts", "when": { "backend": ["supabase"] } }
+    ]
+  },
+  "instructions": [
+    "Requires an installed auth module. Middleware is UX only: verify authentication, role, and ownership again inside Route Handlers and Server Components.",
+    "Firebase session cookies are verified with firebase-admin, which is not available on the edge runtime, so protect Firebase routes at the handler level instead of middleware."
+  ]
+}

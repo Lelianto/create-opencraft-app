@@ -1,0 +1,16 @@
+{
+  "name": "data-table",
+  "version": "1.0.0",
+  "description": "Typed, accessible server-rendered data table with empty state",
+  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "dependencies": [],
+  "npmDependencies": {},
+  "npmDevDependencies": {},
+  "environmentVariables": [],
+  "files": {
+    "atomic": [{ "source": "templates/data-table.tsx", "target": "{{aliases.components}}/molecules/data-table.tsx" }],
+    "feature": [{ "source": "templates/data-table.tsx", "target": "{{aliases.components}}/data-table.tsx" }],
+    "hybrid": [{ "source": "templates/data-table.tsx", "target": "{{aliases.components}}/molecules/data-table.tsx" }]
+  },
+  "instructions": ["Pass only already-sanitized, validated data to the table. Apply ownership/authorization filtering before rendering."]
+}

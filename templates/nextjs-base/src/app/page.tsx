@@ -1,0 +1,1 @@
+export default function Home() { return <main className="mx-auto max-w-3xl p-10"><p className="text-sm font-semibold text-blue-600">OpenCraft</p><h1 className="mt-3 text-4xl font-bold">Your foundation is ready.</h1><p className="mt-4 text-zinc-600">Add a module with <code>npx opencraft add dashboard</code>.</p></main>; }
