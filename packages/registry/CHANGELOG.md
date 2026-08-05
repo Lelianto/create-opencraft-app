@@ -1,5 +1,14 @@
 # @antihero/registry
 
+## 0.2.1
+
+### Patch Changes
+
+- fix: publish with resolved workspace dependency versions instead of raw `workspace:*` protocol, which npm cannot install
+- Updated dependencies
+  - @antihero/config@0.2.1
+  - @antihero/shared@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes

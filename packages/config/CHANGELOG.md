@@ -1,5 +1,11 @@
 # @antihero/config
 
+## 0.2.1
+
+### Patch Changes
+
+- fix: publish with resolved workspace dependency versions instead of raw `workspace:*` protocol, which npm cannot install
+
 ## 0.2.0
 
 ### Minor Changes
