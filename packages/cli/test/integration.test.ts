@@ -51,10 +51,30 @@ describe("createProject", () => {
     expect(config.modules["storage-vercel-blob"]).toBeDefined();
     expect(config.modules["dashboard"]).toBeDefined();
 
-    expect(await fs.access(path.join(appRoot, "AGENTS.md")).then(() => true).catch(() => false)).toBe(true);
-    expect(await fs.access(path.join(appRoot, "src/infrastructure/auth.ts")).then(() => true).catch(() => false)).toBe(true);
-    expect(await fs.access(path.join(appRoot, "src/infrastructure/storage.ts")).then(() => true).catch(() => false)).toBe(true);
-    expect(await fs.access(path.join(appRoot, "src/app/api/uploads/images/route.ts")).then(() => true).catch(() => false)).toBe(true);
+    expect(
+      await fs
+        .access(path.join(appRoot, "AGENTS.md"))
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(true);
+    expect(
+      await fs
+        .access(path.join(appRoot, "src/infrastructure/auth.ts"))
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(true);
+    expect(
+      await fs
+        .access(path.join(appRoot, "src/infrastructure/storage.ts"))
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(true);
+    expect(
+      await fs
+        .access(path.join(appRoot, "src/app/api/uploads/images/route.ts"))
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(true);
     expect(plan.modules.map((item) => item.manifest.name)).toContain("auth-supabase");
   });
 
@@ -86,9 +106,24 @@ describe("createProject", () => {
     expect(config.modules["storage-firebase"]).toBeDefined();
     expect(config.modules["crud-example"]).toBeDefined();
 
-    expect(await fs.access(path.join(appRoot, "AGENTS.md")).then(() => true).catch(() => false)).toBe(true);
-    expect(await fs.access(path.join(appRoot, "src/infrastructure/auth.ts")).then(() => true).catch(() => false)).toBe(true);
-    expect(await fs.access(path.join(appRoot, "src/infrastructure/storage.ts")).then(() => true).catch(() => false)).toBe(true);
+    expect(
+      await fs
+        .access(path.join(appRoot, "AGENTS.md"))
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(true);
+    expect(
+      await fs
+        .access(path.join(appRoot, "src/infrastructure/auth.ts"))
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(true);
+    expect(
+      await fs
+        .access(path.join(appRoot, "src/infrastructure/storage.ts"))
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(true);
     expect(plan.modules.map((item) => item.manifest.name)).toContain("auth-firebase");
   });
 
@@ -112,7 +147,12 @@ describe("createProject", () => {
     expect(config.backend.provider).toBe("none");
     expect(config.authentication.methods).toEqual([]);
     expect(Object.keys(config.modules)).toEqual(["dashboard"]);
-    expect(await fs.access(path.join(appRoot, "src/features")).then(() => true).catch(() => false)).toBe(true);
+    expect(
+      await fs
+        .access(path.join(appRoot, "src/features"))
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(true);
   });
 
   it("supports atomic architecture directories", async () => {
@@ -131,8 +171,18 @@ describe("createProject", () => {
       dryRun: false,
       yes: true,
     });
-    expect(await fs.access(path.join(appRoot, "src/components/atoms")).then(() => true).catch(() => false)).toBe(true);
-    expect(await fs.access(path.join(appRoot, "src/components/molecules")).then(() => true).catch(() => false)).toBe(true);
+    expect(
+      await fs
+        .access(path.join(appRoot, "src/components/atoms"))
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(true);
+    expect(
+      await fs
+        .access(path.join(appRoot, "src/components/molecules"))
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(true);
   });
 
   it("dry run writes nothing", async () => {
@@ -153,13 +203,29 @@ describe("createProject", () => {
     });
     expect(result.files).toEqual([]);
     expect(result.plan.files.length).toBeGreaterThan(0);
-    expect(await fs.access(appRoot).then(() => true).catch(() => false)).toBe(false);
+    expect(
+      await fs
+        .access(appRoot)
+        .then(() => true)
+        .catch(() => false),
+    ).toBe(false);
   });
 
   it("rejects invalid combinations", () => {
-    expect(() => validateChoices({ backend: "none", auth: "google", storage: "none", modules: [] })).toThrow(/requires Supabase or Firebase/);
-    expect(() => validateChoices({ backend: "supabase", auth: "none", storage: "firebase", modules: [] })).toThrow(/requires the Firebase backend/);
-    expect(() => validateChoices({ backend: "supabase", auth: "none", storage: "none", modules: ["image-upload"] })).toThrow(/requires a storage provider/);
+    expect(() =>
+      validateChoices({ backend: "none", auth: "google", storage: "none", modules: [] }),
+    ).toThrow(/requires Supabase or Firebase/);
+    expect(() =>
+      validateChoices({ backend: "supabase", auth: "none", storage: "firebase", modules: [] }),
+    ).toThrow(/requires the Firebase backend/);
+    expect(() =>
+      validateChoices({
+        backend: "supabase",
+        auth: "none",
+        storage: "none",
+        modules: ["image-upload"],
+      }),
+    ).toThrow(/requires a storage provider/);
   });
 });
 
@@ -194,7 +260,9 @@ describe("addModules lifecycle", () => {
     expect(second.modules).toEqual([]);
     expect(second.files.filter((file) => file.status === "create")).toEqual([]);
     const after = await readConfig(appRoot);
-    expect(Object.keys(after.modules).filter((name) => name === "confirmation-dialog")).toHaveLength(1);
+    expect(
+      Object.keys(after.modules).filter((name) => name === "confirmation-dialog"),
+    ).toHaveLength(1);
   });
 
   it("resolves transitive module dependencies", async () => {
@@ -211,7 +279,7 @@ describe("addModules lifecycle", () => {
     const target = path.join(appRoot, "src/lib/validation.ts");
     await fs.mkdir(path.dirname(target), { recursive: true });
     await fs.writeFile(target, "export const custom = true;\n");
-    await expect(addModules(appRoot, ["input-validation"], {})).rejects.toThrow(/Modified files/);
+    await expect(addModules(appRoot, ["input-validation"], {})).rejects.toThrow(/customised/i);
     expect(await fs.readFile(target, "utf8")).toContain("custom");
   });
 

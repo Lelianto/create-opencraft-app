@@ -13,7 +13,9 @@ describe("config", () => {
   });
 
   it("rejects unknown providers", () => {
-    expect(() => configSchema.parse({ ...createDefaultConfig(), backend: { provider: "mysql" } })).toThrow();
+    expect(() =>
+      configSchema.parse({ ...createDefaultConfig(), backend: { provider: "mysql" } }),
+    ).toThrow();
   });
 
   it("rejects invalid architecture", () => {
@@ -21,7 +23,10 @@ describe("config", () => {
   });
 
   it("merges partial input with defaults", () => {
-    const config = createDefaultConfig({ backend: { provider: "firebase" }, architecture: "feature" });
+    const config = createDefaultConfig({
+      backend: { provider: "firebase" },
+      architecture: "feature",
+    });
     expect(config.backend.provider).toBe("firebase");
     expect(config.architecture).toBe("feature");
     expect(config.aliases.features).toBe("@/features");
@@ -30,7 +35,10 @@ describe("config", () => {
   it("writes and reads atomically", async () => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "config-rw-"));
     try {
-      const config = createDefaultConfig({ packageManager: "bun", storage: { provider: "supabase" } });
+      const config = createDefaultConfig({
+        packageManager: "bun",
+        storage: { provider: "supabase" },
+      });
       await writeConfigAtomic(dir, config);
       const roundTrip = await readConfig(dir);
       expect(roundTrip).toEqual(config);

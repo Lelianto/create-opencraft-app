@@ -2,10 +2,23 @@ import { describe, expect, it } from "vitest";
 import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { applyFiles, manifestSchema, planInstall, replacePlaceholders, resolveModules, updateEnvExample, type RegistryModule } from "../src/index.js";
+import {
+  applyFiles,
+  manifestSchema,
+  planInstall,
+  replacePlaceholders,
+  resolveModules,
+  updateEnvExample,
+  type RegistryModule,
+} from "../src/index.js";
 import { createDefaultConfig } from "@antihero/config";
 
-const item = (name: string, dependencies: string[] = [], files: RegistryModule["manifest"]["files"] = { atomic: [], feature: [], hybrid: [] }, directory = "/tmp"): RegistryModule => ({
+const item = (
+  name: string,
+  dependencies: string[] = [],
+  files: RegistryModule["manifest"]["files"] = { atomic: [], feature: [], hybrid: [] },
+  directory = "/tmp",
+): RegistryModule => ({
   directory,
   manifest: {
     name,
@@ -23,12 +36,18 @@ const item = (name: string, dependencies: string[] = [], files: RegistryModule["
 
 describe("registry", () => {
   it("orders transitive dependencies", () => {
-    const registry = new Map([["a", item("a", ["b"])], ["b", item("b")]]);
+    const registry = new Map([
+      ["a", item("a", ["b"])],
+      ["b", item("b")],
+    ]);
     expect(resolveModules(["a"], registry).map((x) => x.manifest.name)).toEqual(["b", "a"]);
   });
 
   it("finds cycles", () => {
-    const registry = new Map([["a", item("a", ["b"])], ["b", item("b", ["a"])]]);
+    const registry = new Map([
+      ["a", item("a", ["b"])],
+      ["b", item("b", ["a"])],
+    ]);
     expect(() => resolveModules(["a"], registry)).toThrow(/Circular/);
   });
 
@@ -38,9 +57,14 @@ describe("registry", () => {
   });
 
   it("replaces paths", () => {
-    const config = createDefaultConfig({ backend: { provider: "supabase" }, storage: { provider: "vercel-blob" } });
+    const config = createDefaultConfig({
+      backend: { provider: "supabase" },
+      storage: { provider: "vercel-blob" },
+    });
     expect(replacePlaceholders("{{aliases.features}}/x", config)).toBe("src/features/x");
-    expect(replacePlaceholders("{{aliases.components}}/{{backend}}/{{storage}}", config)).toBe("src/components/supabase/vercel-blob");
+    expect(replacePlaceholders("{{aliases.components}}/{{backend}}/{{storage}}", config)).toBe(
+      "src/components/supabase/vercel-blob",
+    );
   });
 
   it("validates a manifest and rejects a bad one", () => {
@@ -57,18 +81,27 @@ describe("registry", () => {
       await fs.mkdir(moduleDir, { recursive: true });
       await fs.writeFile(path.join(moduleDir, "a.ts"), "// a");
       await fs.writeFile(path.join(moduleDir, "b.ts"), "// b");
-      const manifest = item("m", [], {
-        atomic: [
-          { source: "a.ts", target: "src/a.ts", when: { backend: ["supabase"] } },
-          { source: "b.ts", target: "src/b.ts", when: { storage: ["firebase"] } },
-        ],
-        feature: [{ source: "a.ts", target: "src/a.ts", when: { backend: ["supabase"] } }],
-        hybrid: [{ source: "a.ts", target: "src/a.ts", when: { backend: ["supabase"] } }],
-      }, moduleDir);
+      const manifest = item(
+        "m",
+        [],
+        {
+          atomic: [
+            { source: "a.ts", target: "src/a.ts", when: { backend: ["supabase"] } },
+            { source: "b.ts", target: "src/b.ts", when: { storage: ["firebase"] } },
+          ],
+          feature: [{ source: "a.ts", target: "src/a.ts", when: { backend: ["supabase"] } }],
+          hybrid: [{ source: "a.ts", target: "src/a.ts", when: { backend: ["supabase"] } }],
+        },
+        moduleDir,
+      );
       const registry = new Map([["m", manifest]]);
       const root = path.join(dir, "app");
       await fs.mkdir(root, { recursive: true });
-      const config = createDefaultConfig({ architecture: "atomic", backend: { provider: "supabase" }, storage: { provider: "firebase" } });
+      const config = createDefaultConfig({
+        architecture: "atomic",
+        backend: { provider: "supabase" },
+        storage: { provider: "firebase" },
+      });
       const plan = await planInstall(root, ["m"], config, registry);
       const targets = plan.files.map((file) => path.relative(root, file.target));
       expect(targets).toContain("src/a.ts");
@@ -85,15 +118,30 @@ describe("registry", () => {
       const moduleDir = path.join(dir, "m");
       await fs.mkdir(moduleDir, { recursive: true });
       await fs.writeFile(path.join(moduleDir, "a.ts"), "// a");
-      const manifest = item("m", [], { atomic: [{ source: "a.ts", target: "src/a.ts" }], feature: [], hybrid: [] }, moduleDir);
+      const manifest = item(
+        "m",
+        [],
+        { atomic: [{ source: "a.ts", target: "src/a.ts" }], feature: [], hybrid: [] },
+        moduleDir,
+      );
       const root = path.join(dir, "app");
       await fs.mkdir(path.join(root, "src"), { recursive: true });
       await fs.writeFile(path.join(root, "src/a.ts"), "// a");
-      const plan = await planInstall(root, ["m"], createDefaultConfig({ architecture: "atomic" }), new Map([["m", manifest]]));
+      const plan = await planInstall(
+        root,
+        ["m"],
+        createDefaultConfig({ architecture: "atomic" }),
+        new Map([["m", manifest]]),
+      );
       expect(plan.files[0]?.status).toBe("unchanged");
 
       await fs.writeFile(path.join(root, "src/a.ts"), "// customized");
-      const plan2 = await planInstall(root, ["m"], createDefaultConfig({ architecture: "atomic" }), new Map([["m", manifest]]));
+      const plan2 = await planInstall(
+        root,
+        ["m"],
+        createDefaultConfig({ architecture: "atomic" }),
+        new Map([["m", manifest]]),
+      );
       expect(plan2.files[0]?.status).toBe("modified");
     } finally {
       await fs.rm(dir, { recursive: true, force: true });
@@ -106,11 +154,21 @@ describe("registry", () => {
       const moduleDir = path.join(dir, "m");
       await fs.mkdir(moduleDir, { recursive: true });
       await fs.writeFile(path.join(moduleDir, "a.ts"), "// a");
-      const manifest = item("m", [], { atomic: [{ source: "a.ts", target: "src/a.ts" }], feature: [], hybrid: [] }, moduleDir);
+      const manifest = item(
+        "m",
+        [],
+        { atomic: [{ source: "a.ts", target: "src/a.ts" }], feature: [], hybrid: [] },
+        moduleDir,
+      );
       const root = path.join(dir, "app");
       await fs.mkdir(path.join(root, "src"), { recursive: true });
       await fs.writeFile(path.join(root, "src/a.ts"), "// customized");
-      const plan = await planInstall(root, ["m"], createDefaultConfig({ architecture: "atomic" }), new Map([["m", manifest]]));
+      const plan = await planInstall(
+        root,
+        ["m"],
+        createDefaultConfig({ architecture: "atomic" }),
+        new Map([["m", manifest]]),
+      );
       await expect(applyFiles(plan)).rejects.toThrow(/modified/i);
       await applyFiles(plan, true);
       expect(await fs.readFile(path.join(root, "src/a.ts"), "utf8")).toBe("// a");

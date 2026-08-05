@@ -1,10 +1,20 @@
 #!/usr/bin/env node
 import path from "node:path";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { Command } from "commander";
 import * as p from "@clack/prompts";
+import { z } from "zod";
 import { createProject, printPlan, type CreateOptions } from "@antihero/cli";
-import { architectureSchema, backendSchema, packageManagerSchema, storageSchema } from "@antihero/config";
+import {
+  architectureSchema,
+  backendSchema,
+  packageManagerSchema,
+  storageSchema,
+} from "@antihero/config";
 import { detectPackageManager } from "@antihero/shared";
+
+const authSchema = z.enum(["none", "google"]);
 
 interface CreateFlags {
   architecture?: string;
@@ -19,10 +29,30 @@ interface CreateFlags {
   git?: boolean;
 }
 
+/** Read the version from this package's own manifest rather than hardcoding it. */
+function readVersion(): string {
+  let directory = path.dirname(fileURLToPath(import.meta.url));
+  for (let depth = 0; depth < 5; depth += 1) {
+    try {
+      const parsed: unknown = JSON.parse(
+        readFileSync(path.join(directory, "package.json"), "utf8"),
+      );
+      if (typeof parsed === "object" && parsed !== null && "version" in parsed) {
+        const { version } = parsed as { version?: unknown };
+        if (typeof version === "string") return version;
+      }
+    } catch {
+      // Keep walking upwards.
+    }
+    directory = path.dirname(directory);
+  }
+  return "0.0.0";
+}
+
 const program = new Command()
   .name("create-opencraft-app")
   .description("Create a new OpenCraft Next.js application")
-  .version("0.1.0")
+  .version(readVersion())
   .argument("[project-name]")
   .option("--architecture <value>", "Component architecture (hybrid, feature, atomic)")
   .option("--backend <value>", "Backend provider (none, supabase, firebase)")
@@ -53,8 +83,10 @@ program.action(async (projectNameArg: string | undefined, flags: CreateFlags) =>
       message: "Project name?",
       placeholder: "my-app",
       validate: (val) =>
-        /^[a-z0-9][a-z0-9-]*$/.test(val ?? "") ? undefined : "Use lowercase letters, numbers, and hyphens",
-    })
+        /^[a-z0-9][a-z0-9-]*$/.test(val ?? "")
+          ? undefined
+          : "Use lowercase letters, numbers, and hyphens",
+    }),
   );
 
   const defaultPm = await detectPackageManager(process.cwd());
@@ -63,7 +95,7 @@ program.action(async (projectNameArg: string | undefined, flags: CreateFlags) =>
       message: "Package manager?",
       options: ["pnpm", "npm", "yarn", "bun"].map((val) => ({ value: val, label: val })),
       initialValue: defaultPm,
-    })
+    }),
   );
   const packageManager = packageManagerSchema.parse(pmInput);
 
@@ -75,7 +107,7 @@ program.action(async (projectNameArg: string | undefined, flags: CreateFlags) =>
         { value: "feature", label: "Feature-based" },
         { value: "atomic", label: "Atomic Design" },
       ],
-    })
+    }),
   );
   const architecture = architectureSchema.parse(archInput);
 
@@ -83,7 +115,7 @@ program.action(async (projectNameArg: string | undefined, flags: CreateFlags) =>
     p.select({
       message: "Backend?",
       options: ["none", "supabase", "firebase"].map((val) => ({ value: val, label: val })),
-    })
+    }),
   );
   const backend = backendSchema.parse(backendInput);
 
@@ -94,15 +126,18 @@ program.action(async (projectNameArg: string | undefined, flags: CreateFlags) =>
         { value: "none", label: "None" },
         { value: "google", label: "Google" },
       ],
-    })
+    }),
   );
-  const auth = authInput as "none" | "google";
+  const auth = authSchema.parse(authInput);
 
   const storageInput = await ask<string>(flags.storage, () =>
     p.select({
       message: "Storage?",
-      options: ["none", "vercel-blob", "supabase", "firebase"].map((val) => ({ value: val, label: val })),
-    })
+      options: ["none", "vercel-blob", "supabase", "firebase"].map((val) => ({
+        value: val,
+        label: val,
+      })),
+    }),
   );
   const storage = storageSchema.parse(storageInput);
 
@@ -133,7 +168,7 @@ program.action(async (projectNameArg: string | undefined, flags: CreateFlags) =>
           "user-profile",
           "audit-log",
         ].map((val) => ({ value: val, label: val })),
-      })
+      }),
     );
     modules = Array.isArray(selected) ? selected : [];
   }

@@ -2,7 +2,13 @@ import { describe, expect, it } from "vitest";
 import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { checksum, detectPackageManager, fileChecksum, packageCommand, pathExists } from "../src/index.js";
+import {
+  checksum,
+  detectPackageManager,
+  fileChecksum,
+  packageCommand,
+  pathExists,
+} from "../src/index.js";
 
 describe("shared", () => {
   it("hashes deterministically", () => expect(checksum("x")).toBe(checksum("x")));
@@ -17,7 +23,12 @@ describe("shared", () => {
   it("detects package managers by lockfile", async () => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "shared-pm-"));
     const write = (name: string) => fs.writeFile(path.join(dir, name), "");
-    const clear = () => fs.rm(path.join(dir, "package-lock.json"), { force: true }).then(() => fs.rm(path.join(dir, "pnpm-lock.yaml"), { force: true })).then(() => fs.rm(path.join(dir, "bun.lockb"), { force: true })).then(() => fs.rm(path.join(dir, "yarn.lock"), { force: true }));
+    const clear = () =>
+      fs
+        .rm(path.join(dir, "package-lock.json"), { force: true })
+        .then(() => fs.rm(path.join(dir, "pnpm-lock.yaml"), { force: true }))
+        .then(() => fs.rm(path.join(dir, "bun.lockb"), { force: true }))
+        .then(() => fs.rm(path.join(dir, "yarn.lock"), { force: true }));
     try {
       await write("package-lock.json");
       expect(await detectPackageManager(dir)).toBe("npm");
