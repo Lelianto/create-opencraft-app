@@ -13,5 +13,7 @@
     "feature": [{ "source": "templates/page.tsx", "target": "src/app/profile/page.tsx" }],
     "hybrid": [{ "source": "templates/page.tsx", "target": "src/app/profile/page.tsx" }]
   },
-  "instructions": ["Requires an installed auth module exporting requireUser from @/infrastructure/auth. Profile data always comes from the server-verified session."]
+  "instructions": [
+    "Requires an installed auth module exporting requireUser from @/infrastructure/auth. Profile data always comes from the server-verified session."
+  ]
 }

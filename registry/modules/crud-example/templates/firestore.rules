@@ -1,0 +1,51 @@
+rules_version = '2';
+
+// Firestore Security Rules for owner-scoped products.
+//
+// These govern direct client SDK access. The Admin SDK used by this app's Route
+// Handlers bypasses rules completely, so these are a second line of defence for
+// any code path that talks to Firestore from the browser.
+//
+// Deploy with: firebase deploy --only firestore:rules
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function ownsExisting() {
+      return isSignedIn() && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Validate the shape on write so a client cannot store arbitrary fields or
+    // claim ownership on somebody else's behalf.
+    function validProduct() {
+      let data = request.resource.data;
+      return data.keys().hasOnly(
+               ['name', 'description', 'price', 'imageUrl', 'ownerId', 'createdAt', 'updatedAt']
+             )
+             && data.ownerId == request.auth.uid
+             && data.name is string
+             && data.name.size() >= 1
+             && data.name.size() <= 120
+             && (data.description == null || data.description.size() <= 2000)
+             && data.price is number
+             && data.price >= 0;
+    }
+
+    match /products/{productId} {
+      allow get, list: if ownsExisting();
+      allow create: if isSignedIn() && validProduct();
+      // Ownership must hold both before and after the write.
+      allow update: if ownsExisting() && validProduct();
+      allow delete: if ownsExisting();
+    }
+
+    // Anything not explicitly allowed above is denied.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

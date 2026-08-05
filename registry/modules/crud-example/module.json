@@ -1,1 +1,120 @@
-{"name":"crud-example","version":"1.0.0","description":"Secure Product CRUD reference with search and pagination","supportedArchitectures":["atomic","feature","hybrid"],"dependencies":["input-validation","api-response","confirmation-dialog"],"npmDependencies":{},"npmDevDependencies":{},"environmentVariables":[],"files":{"atomic":[{"source":"templates/schema.ts","target":"src/features/products/schema.ts"},{"source":"templates/route.ts","target":"src/app/api/products/route.ts"},{"source":"templates/page.tsx","target":"src/app/products/page.tsx"}],"feature":[{"source":"templates/schema.ts","target":"src/features/products/schema.ts"},{"source":"templates/route.ts","target":"src/app/api/products/route.ts"},{"source":"templates/page.tsx","target":"src/app/products/page.tsx"}],"hybrid":[{"source":"templates/schema.ts","target":"src/features/products/schema.ts"},{"source":"templates/route.ts","target":"src/app/api/products/route.ts"},{"source":"templates/page.tsx","target":"src/app/products/page.tsx"}]},"instructions":["The in-memory repository demonstrates boundaries only. Select a backend provider and replace it with parameterized/SDK queries plus ownership policies for production."]}
+{
+  "name": "crud-example",
+  "version": "2.0.0",
+  "description": "Reference Product CRUD: server-verified auth, ownership checks, search, pagination, and provider-backed persistence",
+  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedBackends": ["supabase", "firebase"],
+  "dependencies": ["input-validation", "api-response", "error-handling", "confirmation-dialog"],
+  "npmDependencies": {},
+  "npmDevDependencies": {},
+  "environmentVariables": [],
+  "files": {
+    "atomic": [
+      { "source": "templates/schema.ts", "target": "{{dir.domain}}/products/schema.ts" },
+      {
+        "source": "templates/repository.supabase.ts",
+        "target": "{{dir.domain}}/products/repository.ts",
+        "when": { "backend": ["supabase"] }
+      },
+      {
+        "source": "templates/repository.firebase.ts",
+        "target": "{{dir.domain}}/products/repository.ts",
+        "when": { "backend": ["firebase"] }
+      },
+      { "source": "templates/route.ts", "target": "src/app/api/products/route.ts" },
+      { "source": "templates/route-detail.ts", "target": "src/app/api/products/[id]/route.ts" },
+      { "source": "templates/page.tsx", "target": "src/app/products/page.tsx" },
+      {
+        "source": "templates/product-form.tsx",
+        "target": "{{aliases.components}}/products/product-form.tsx"
+      },
+      {
+        "source": "templates/delete-product-button.tsx",
+        "target": "{{aliases.components}}/products/delete-product-button.tsx"
+      },
+      {
+        "source": "templates/products.sql",
+        "target": "supabase/products.sql",
+        "when": { "backend": ["supabase"] }
+      },
+      {
+        "source": "templates/firestore.rules",
+        "target": "firestore.rules",
+        "when": { "backend": ["firebase"] }
+      }
+    ],
+    "feature": [
+      { "source": "templates/schema.ts", "target": "{{dir.domain}}/products/schema.ts" },
+      {
+        "source": "templates/repository.supabase.ts",
+        "target": "{{dir.domain}}/products/repository.ts",
+        "when": { "backend": ["supabase"] }
+      },
+      {
+        "source": "templates/repository.firebase.ts",
+        "target": "{{dir.domain}}/products/repository.ts",
+        "when": { "backend": ["firebase"] }
+      },
+      { "source": "templates/route.ts", "target": "src/app/api/products/route.ts" },
+      { "source": "templates/route-detail.ts", "target": "src/app/api/products/[id]/route.ts" },
+      { "source": "templates/page.tsx", "target": "src/app/products/page.tsx" },
+      {
+        "source": "templates/product-form.tsx",
+        "target": "{{aliases.components}}/products/product-form.tsx"
+      },
+      {
+        "source": "templates/delete-product-button.tsx",
+        "target": "{{aliases.components}}/products/delete-product-button.tsx"
+      },
+      {
+        "source": "templates/products.sql",
+        "target": "supabase/products.sql",
+        "when": { "backend": ["supabase"] }
+      },
+      {
+        "source": "templates/firestore.rules",
+        "target": "firestore.rules",
+        "when": { "backend": ["firebase"] }
+      }
+    ],
+    "hybrid": [
+      { "source": "templates/schema.ts", "target": "{{dir.domain}}/products/schema.ts" },
+      {
+        "source": "templates/repository.supabase.ts",
+        "target": "{{dir.domain}}/products/repository.ts",
+        "when": { "backend": ["supabase"] }
+      },
+      {
+        "source": "templates/repository.firebase.ts",
+        "target": "{{dir.domain}}/products/repository.ts",
+        "when": { "backend": ["firebase"] }
+      },
+      { "source": "templates/route.ts", "target": "src/app/api/products/route.ts" },
+      { "source": "templates/route-detail.ts", "target": "src/app/api/products/[id]/route.ts" },
+      { "source": "templates/page.tsx", "target": "src/app/products/page.tsx" },
+      {
+        "source": "templates/product-form.tsx",
+        "target": "{{aliases.components}}/products/product-form.tsx"
+      },
+      {
+        "source": "templates/delete-product-button.tsx",
+        "target": "{{aliases.components}}/products/delete-product-button.tsx"
+      },
+      {
+        "source": "templates/products.sql",
+        "target": "supabase/products.sql",
+        "when": { "backend": ["supabase"] }
+      },
+      {
+        "source": "templates/firestore.rules",
+        "target": "firestore.rules",
+        "when": { "backend": ["firebase"] }
+      }
+    ]
+  },
+  "instructions": [
+    "Supabase: run supabase/products.sql in the SQL editor to create the table, indexes, and Row Level Security policies.",
+    "Firebase: deploy firestore.rules with `firebase deploy --only firestore:rules`, and create a composite index on (ownerId, createdAt) when prompted.",
+    "Ownership is enforced in the repository AND in provider rules. Keep both when you adapt this to your own entity."
+  ]
+}

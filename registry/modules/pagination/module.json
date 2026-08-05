@@ -8,9 +8,23 @@
   "npmDevDependencies": {},
   "environmentVariables": [],
   "files": {
-    "atomic": [{ "source": "templates/pagination.tsx", "target": "{{aliases.components}}/molecules/pagination.tsx" }],
-    "feature": [{ "source": "templates/pagination.tsx", "target": "{{aliases.components}}/pagination.tsx" }],
-    "hybrid": [{ "source": "templates/pagination.tsx", "target": "{{aliases.components}}/molecules/pagination.tsx" }]
+    "atomic": [
+      {
+        "source": "templates/pagination.tsx",
+        "target": "{{aliases.components}}/molecules/pagination.tsx"
+      }
+    ],
+    "feature": [
+      { "source": "templates/pagination.tsx", "target": "{{aliases.components}}/pagination.tsx" }
+    ],
+    "hybrid": [
+      {
+        "source": "templates/pagination.tsx",
+        "target": "{{aliases.components}}/molecules/pagination.tsx"
+      }
+    ]
   },
-  "instructions": ["The page number comes from the URL but must be clamped and validated server-side before it reaches a query."]
+  "instructions": [
+    "The page number comes from the URL but must be clamped and validated server-side before it reaches a query."
+  ]
 }

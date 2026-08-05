@@ -1,2 +1,54 @@
-import{productInputSchema,type Product}from"@/features/products/schema";import{ok,fail}from"@/lib/api-response";
-const products:Product[]=[];export async function GET(request:Request){const actor=request.headers.get("x-authenticated-user");if(!actor)return fail("UNAUTHENTICATED","Authentication required",401);const url=new URL(request.url);const search=(url.searchParams.get("search")??"").slice(0,120).toLowerCase();const page=Math.max(1,Number(url.searchParams.get("page")??1)||1);const owned=products.filter((item)=>item.ownerId===actor&&item.name.toLowerCase().includes(search));return ok({items:owned.slice((page-1)*20,page*20),page,total:owned.length})}export async function POST(request:Request){const actor=request.headers.get("x-authenticated-user");if(!actor)return fail("UNAUTHENTICATED","Authentication required",401);const parsed=productInputSchema.safeParse(await request.json().catch(()=>null));if(!parsed.success)return fail("INVALID_INPUT","Check the submitted fields",422,parsed.error.flatten().fieldErrors);const now=new Date().toISOString();const product:Product={id:crypto.randomUUID(),...parsed.data,imageUrl:null,ownerId:actor,createdAt:now,updatedAt:now};products.push(product);return ok(product,201)}
+import { requireUser } from "@/infrastructure/auth";
+import { ok, fail } from "@/lib/api-response";
+import { AppError, logError, toAppError } from "@/lib/errors";
+import { createProduct, listProducts } from "{{import.domain}}/products/repository";
+import {
+  productInputSchema,
+  productListQuerySchema,
+  toFieldErrors,
+} from "{{import.domain}}/products/schema";
+
+/**
+ * GET /api/products — the caller's own products, searchable and paginated.
+ *
+ * The handler never accepts an owner id from the client; it is derived from the
+ * verified session, so one user cannot enumerate another user's rows.
+ */
+export async function GET(request: Request) {
+  try {
+    const user = await requireUser();
+
+    const url = new URL(request.url);
+    const parsed = productListQuerySchema.safeParse(Object.fromEntries(url.searchParams));
+    if (!parsed.success) {
+      throw new AppError("INVALID_INPUT", "Invalid query parameters", toFieldErrors(parsed.error));
+    }
+
+    const page = await listProducts(user.id, parsed.data);
+    return ok(page);
+  } catch (error) {
+    logError("GET /api/products", error);
+    const appError = toAppError(error);
+    return fail(appError.code, appError.message, appError.status, appError.fieldErrors);
+  }
+}
+
+/** POST /api/products — create a product owned by the caller. */
+export async function POST(request: Request) {
+  try {
+    const user = await requireUser();
+
+    const body: unknown = await request.json().catch(() => null);
+    const parsed = productInputSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new AppError("INVALID_INPUT", undefined, toFieldErrors(parsed.error));
+    }
+
+    const product = await createProduct(user.id, parsed.data);
+    return ok(product, 201);
+  } catch (error) {
+    logError("POST /api/products", error);
+    const appError = toAppError(error);
+    return fail(appError.code, appError.message, appError.status, appError.fieldErrors);
+  }
+}

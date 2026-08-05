@@ -1,1 +1,40 @@
-{"name":"storage-firebase","version":"1.0.0","description":"Firebase Storage server adapter","supportedArchitectures":["atomic","feature","hybrid"],"supportedBackends":["firebase"],"dependencies":[],"npmDependencies":{"firebase-admin":"^13.5.0"},"npmDevDependencies":{},"environmentVariables":[{"name":"FIREBASE_STORAGE_BUCKET","description":"Firebase storage bucket","required":true}],"files":{"atomic":[{"source":"templates/storage.ts","target":"{{aliases.infrastructure}}/storage.ts"}],"feature":[{"source":"templates/storage.ts","target":"{{aliases.infrastructure}}/storage.ts"}],"hybrid":[{"source":"templates/storage.ts","target":"{{aliases.infrastructure}}/storage.ts"}]},"instructions":["Keep Firebase Storage Rules deny-by-default and authorize access server-side."]}
+{
+  "name": "storage-firebase",
+  "version": "1.0.0",
+  "description": "Firebase Storage server adapter",
+  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedBackends": ["firebase"],
+  "dependencies": ["error-handling"],
+  "npmDependencies": {
+    "firebase-admin": "14.2.0"
+  },
+  "npmDevDependencies": {},
+  "environmentVariables": [
+    {
+      "name": "FIREBASE_STORAGE_BUCKET",
+      "description": "Firebase storage bucket",
+      "required": true
+    }
+  ],
+  "files": {
+    "atomic": [
+      {
+        "source": "templates/storage.ts",
+        "target": "{{aliases.infrastructure}}/storage.ts"
+      }
+    ],
+    "feature": [
+      {
+        "source": "templates/storage.ts",
+        "target": "{{aliases.infrastructure}}/storage.ts"
+      }
+    ],
+    "hybrid": [
+      {
+        "source": "templates/storage.ts",
+        "target": "{{aliases.infrastructure}}/storage.ts"
+      }
+    ]
+  },
+  "instructions": ["Keep Firebase Storage Rules deny-by-default and authorize access server-side."]
+}

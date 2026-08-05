@@ -8,9 +8,23 @@
   "npmDevDependencies": {},
   "environmentVariables": [],
   "files": {
-    "atomic": [{ "source": "templates/data-table.tsx", "target": "{{aliases.components}}/molecules/data-table.tsx" }],
-    "feature": [{ "source": "templates/data-table.tsx", "target": "{{aliases.components}}/data-table.tsx" }],
-    "hybrid": [{ "source": "templates/data-table.tsx", "target": "{{aliases.components}}/molecules/data-table.tsx" }]
+    "atomic": [
+      {
+        "source": "templates/data-table.tsx",
+        "target": "{{aliases.components}}/molecules/data-table.tsx"
+      }
+    ],
+    "feature": [
+      { "source": "templates/data-table.tsx", "target": "{{aliases.components}}/data-table.tsx" }
+    ],
+    "hybrid": [
+      {
+        "source": "templates/data-table.tsx",
+        "target": "{{aliases.components}}/molecules/data-table.tsx"
+      }
+    ]
   },
-  "instructions": ["Pass only already-sanitized, validated data to the table. Apply ownership/authorization filtering before rendering."]
+  "instructions": [
+    "Pass only already-sanitized, validated data to the table. Apply ownership/authorization filtering before rendering."
+  ]
 }
