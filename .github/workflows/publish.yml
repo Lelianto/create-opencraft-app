@@ -42,8 +42,36 @@ jobs:
           # Trusted publishing requires Node >= 22.14.0 and npm >= 11.5.1.
           # Node 20 bundles npm 10.x, where OIDC does not exist — which is why
           # publishing failed with E404 on every PUT.
+          #
+          # `registry-url` is deliberately NOT set. It makes setup-node write an
+          # .npmrc containing `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}`,
+          # and with no token in the environment that resolves to an empty
+          # credential. npm then presents an empty token instead of falling back to
+          # OIDC, and the registry answers 404. The default registry is npmjs.org
+          # anyway, so nothing is lost.
           node-version: 24.x
-          registry-url: "https://registry.npmjs.org/"
+
+      - name: Diagnose publish authentication
+        # Cheap, and it turns "E404" into an answerable question. Prints no secrets:
+        # only whether the OIDC request variables exist and what npm has configured.
+        run: |
+          echo "node $(node -v) / npm $(npm -v)"
+          if [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]; then
+            echo "OIDC: request URL present (id-token: write is in effect)"
+          else
+            echo "OIDC: NOT AVAILABLE - id-token: write is missing or ineffective"
+          fi
+          echo "--- npmrc files that could override OIDC ---"
+          for f in "$RUNNER_TEMP/.npmrc" "$HOME/.npmrc" "$GITHUB_WORKSPACE/.npmrc"; do
+            if [ -f "$f" ]; then
+              echo "found $f:"
+              sed -E 's/(_authToken=).*/\1<redacted>/' "$f" | sed 's/^/    /'
+            else
+              echo "absent  $f"
+            fi
+          done
+          echo "--- effective registry ---"
+          npm config get registry
 
       - name: Ensure npm supports trusted publishing
         # Node 24.x bundles npm 11.17+, which already satisfies the >= 11.5.1 that
