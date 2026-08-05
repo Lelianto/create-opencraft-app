@@ -1,4 +1,100 @@
-import{fileTypeFromBuffer}from"file-type";import sharp from"sharp";import{ok,fail}from"@/lib/api-response";import{checkRateLimit}from"@/infrastructure/rate-limit";import{storage}from"@/infrastructure/storage";
-const allowed=new Set(["image/jpeg","image/png","image/webp"]);const maxInput=10_000_000;const maxOutput=2_000_000;
-export async function POST(request:Request){try{const actor=request.headers.get("x-authenticated-user");if(!actor)return fail("UNAUTHENTICATED","Authentication required",401);if(!checkRateLimit(`image:${actor}`,10).allowed)return fail("RATE_LIMITED","Try again later",429);const body=await request.formData();const value=body.get("file");if(!(value instanceof File)||value.size>maxInput)return fail("INVALID_FILE","Invalid file",400);const input=new Uint8Array(await value.arrayBuffer());const detected=await fileTypeFromBuffer(input);if(!detected||!allowed.has(detected.mime))return fail("INVALID_FILE","Unsupported image",400);const pipeline=sharp(input,{limitInputPixels:25_000_000,failOn:"warning"}).rotate();const metadata=await pipeline.metadata();if(!metadata.width||!metadata.height||metadata.width>10_000||metadata.height>10_000)return fail("INVALID_DIMENSIONS","Invalid image dimensions",400);const output=await pipeline.resize({width:2048,height:2048,fit:"inside",withoutEnlargement:true}).webp({quality:82}).toBuffer();if(output.byteLength>maxOutput)return fail("FILE_TOO_LARGE","Processed image exceeds 2 MB",400);const uploaded=await storage.upload({data:output,contentType:"image/webp",key:`images/${crypto.randomUUID()}.webp`});return ok(uploaded,201)}catch{console.error("Image upload failed");return fail("UPLOAD_FAILED","Unable to upload image",500)}}
+import { fileTypeFromBuffer } from "file-type";
+import sharp from "sharp";
+import { requireUser } from "@/infrastructure/auth";
+import { storage } from "@/infrastructure/storage";
+import { checkRateLimit } from "@/infrastructure/rate-limit";
+import { ok, fail } from "@/lib/api-response";
+import { AppError, logError, toAppError } from "@/lib/errors";
 
+/**
+ * Server-side image processing limits.
+ *
+ * These are deliberately enforced on the server. The browser-side compression in
+ * the uploader component is a UX optimisation and carries no security weight.
+ */
+const limits = {
+  maxInputBytes: 10_000_000,
+  maxOutputBytes: 2_000_000,
+  maxWidth: 2048,
+  maxHeight: 2048,
+  quality: 82,
+} as const;
+
+/**
+ * SVG is excluded on purpose: it is an XML document that can carry script and
+ * external references, so it is not safe to serve from the same origin as the
+ * app without dedicated sanitisation.
+ */
+const allowedMimeTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+
+export async function POST(request: Request) {
+  try {
+    // 1. Identity, verified server-side against the auth provider.
+    const user = await requireUser();
+
+    // 2. Abuse control, keyed to the authenticated user rather than an IP.
+    if (!checkRateLimit(`image-upload:${user.id}`, 10).allowed) {
+      throw new AppError("RATE_LIMITED");
+    }
+
+    // 3. Extract the candidate file.
+    const form = await request.formData();
+    const candidate = form.get("file");
+    if (!(candidate instanceof File)) {
+      throw new AppError("INVALID_INPUT", "Expected a file field named 'file'");
+    }
+    if (candidate.size === 0 || candidate.size > limits.maxInputBytes) {
+      throw new AppError(
+        "INVALID_INPUT",
+        `File must be between 1 byte and ${limits.maxInputBytes} bytes`,
+      );
+    }
+
+    const input = new Uint8Array(await candidate.arrayBuffer());
+
+    // 4. Trust the bytes, not the browser. `candidate.type` is client-supplied
+    //    and is never consulted.
+    const detected = await fileTypeFromBuffer(input);
+    if (!detected || !allowedMimeTypes.has(detected.mime)) {
+      throw new AppError("INVALID_INPUT", "Unsupported image format");
+    }
+
+    // 5. Decode with a pixel ceiling so a small file cannot expand into a
+    //    memory-exhausting bitmap (a "decompression bomb").
+    const pipeline = sharp(input, { limitInputPixels: 25_000_000 }).rotate();
+    const metadata = await pipeline.metadata();
+    if (!metadata.width || !metadata.height) {
+      throw new AppError("INVALID_INPUT", "Could not read image dimensions");
+    }
+
+    // 6. Re-encode to WebP. Re-encoding also drops EXIF, including GPS data.
+    //    `.rotate()` above bakes in the orientation before that metadata is lost.
+    const output = await pipeline
+      .resize({
+        width: limits.maxWidth,
+        height: limits.maxHeight,
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .webp({ quality: limits.quality })
+      .toBuffer();
+
+    if (output.byteLength > limits.maxOutputBytes) {
+      throw new AppError("INVALID_INPUT", "Processed image is still too large");
+    }
+
+    // 7. Randomised, namespaced key. User input never contributes to the path,
+    //    which rules out traversal and collisions.
+    const uploaded = await storage.upload({
+      data: output,
+      contentType: "image/webp",
+      key: `images/${user.id}/${crypto.randomUUID()}.webp`,
+    });
+
+    return ok(uploaded, 201);
+  } catch (error) {
+    logError("POST /api/uploads/images", error);
+    const appError = toAppError(error);
+    return fail(appError.code, appError.message, appError.status, appError.fieldErrors);
+  }
+}

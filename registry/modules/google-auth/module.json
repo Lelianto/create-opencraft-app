@@ -1,1 +1,85 @@
-{"name":"google-auth","version":"1.0.0","description":"Google sign-in UI for the selected auth provider","supportedArchitectures":["atomic","feature","hybrid"],"supportedBackends":["supabase","firebase"],"dependencies":[],"npmDependencies":{},"npmDevDependencies":{},"environmentVariables":[],"files":{"atomic":[{"source":"templates/supabase.tsx","target":"{{aliases.components}}/molecules/google-sign-in.tsx","when":{"backend":["supabase"]}},{"source":"templates/firebase.tsx","target":"{{aliases.components}}/molecules/google-sign-in.tsx","when":{"backend":["firebase"]}}],"feature":[{"source":"templates/supabase.tsx","target":"{{aliases.features}}/authentication/components/google-sign-in.tsx","when":{"backend":["supabase"]}},{"source":"templates/firebase.tsx","target":"{{aliases.features}}/authentication/components/google-sign-in.tsx","when":{"backend":["firebase"]}}],"hybrid":[{"source":"templates/supabase.tsx","target":"{{aliases.features}}/authentication/components/google-sign-in.tsx","when":{"backend":["supabase"]}},{"source":"templates/firebase.tsx","target":"{{aliases.features}}/authentication/components/google-sign-in.tsx","when":{"backend":["firebase"]}}]},"instructions":["Validate post-login redirect paths against an internal allowlist; never accept arbitrary redirect URLs."]}
+{
+  "name": "google-auth",
+  "version": "1.0.0",
+  "description": "Google sign-in UI for the selected auth provider",
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
+  "supportedBackends": [
+    "supabase",
+    "firebase"
+  ],
+  "dependencies": [
+    "error-handling"
+  ],
+  "npmDependencies": {},
+  "npmDevDependencies": {},
+  "environmentVariables": [],
+  "files": {
+    "atomic": [
+      {
+        "source": "templates/supabase.tsx",
+        "target": "{{dir.domain}}/authentication/components/google-sign-in.tsx",
+        "when": {
+          "backend": [
+            "supabase"
+          ]
+        }
+      },
+      {
+        "source": "templates/firebase.tsx",
+        "target": "{{dir.domain}}/authentication/components/google-sign-in.tsx",
+        "when": {
+          "backend": [
+            "firebase"
+          ]
+        }
+      }
+    ],
+    "feature": [
+      {
+        "source": "templates/supabase.tsx",
+        "target": "{{dir.domain}}/authentication/components/google-sign-in.tsx",
+        "when": {
+          "backend": [
+            "supabase"
+          ]
+        }
+      },
+      {
+        "source": "templates/firebase.tsx",
+        "target": "{{dir.domain}}/authentication/components/google-sign-in.tsx",
+        "when": {
+          "backend": [
+            "firebase"
+          ]
+        }
+      }
+    ],
+    "hybrid": [
+      {
+        "source": "templates/supabase.tsx",
+        "target": "{{dir.domain}}/authentication/components/google-sign-in.tsx",
+        "when": {
+          "backend": [
+            "supabase"
+          ]
+        }
+      },
+      {
+        "source": "templates/firebase.tsx",
+        "target": "{{dir.domain}}/authentication/components/google-sign-in.tsx",
+        "when": {
+          "backend": [
+            "firebase"
+          ]
+        }
+      }
+    ]
+  },
+  "instructions": [
+    "Validate post-login redirect paths against an internal allowlist; never accept arbitrary redirect URLs."
+  ]
+}

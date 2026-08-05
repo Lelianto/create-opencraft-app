@@ -1,1 +1,50 @@
-{"name":"image-upload","version":"1.0.0","description":"Validated, compressed WebP image upload pipeline","supportedArchitectures":["atomic","feature","hybrid"],"dependencies":["input-validation","api-response","rate-limit"],"npmDependencies":{"browser-image-compression":"^2.0.2","file-type":"^21.0.0","sharp":"^0.34.3"},"npmDevDependencies":{},"environmentVariables":[],"files":{"atomic":[{"source":"templates/image-uploader.tsx","target":"{{aliases.components}}/organisms/image-uploader.tsx"},{"source":"templates/route.ts","target":"src/app/api/uploads/images/route.ts"}],"feature":[{"source":"templates/image-uploader.tsx","target":"{{aliases.features}}/uploads/components/image-uploader.tsx"},{"source":"templates/route.ts","target":"src/app/api/uploads/images/route.ts"}],"hybrid":[{"source":"templates/image-uploader.tsx","target":"{{aliases.features}}/uploads/components/image-uploader.tsx"},{"source":"templates/route.ts","target":"src/app/api/uploads/images/route.ts"}]},"instructions":["Upload authorization is application-specific: replace the authenticated user header example with requireUser() before production."]}
+{
+  "name": "image-upload",
+  "version": "1.0.0",
+  "description": "Validated, compressed WebP image upload pipeline",
+  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "dependencies": ["input-validation", "api-response", "rate-limit", "error-handling"],
+  "npmDependencies": {
+    "browser-image-compression": "2.0.2",
+    "file-type": "22.0.1",
+    "sharp": "0.35.3"
+  },
+  "npmDevDependencies": {},
+  "environmentVariables": [],
+  "files": {
+    "atomic": [
+      {
+        "source": "templates/image-uploader.tsx",
+        "target": "{{aliases.components}}/organisms/image-uploader.tsx"
+      },
+      {
+        "source": "templates/route.ts",
+        "target": "src/app/api/uploads/images/route.ts"
+      }
+    ],
+    "feature": [
+      {
+        "source": "templates/image-uploader.tsx",
+        "target": "{{aliases.features}}/uploads/components/image-uploader.tsx"
+      },
+      {
+        "source": "templates/route.ts",
+        "target": "src/app/api/uploads/images/route.ts"
+      }
+    ],
+    "hybrid": [
+      {
+        "source": "templates/image-uploader.tsx",
+        "target": "{{aliases.features}}/uploads/components/image-uploader.tsx"
+      },
+      {
+        "source": "templates/route.ts",
+        "target": "src/app/api/uploads/images/route.ts"
+      }
+    ]
+  },
+  "instructions": [
+    "Upload authorization is application-specific: replace the authenticated user header example with requireUser() before production."
+  ],
+  "supportedBackends": ["supabase", "firebase"]
+}

@@ -1,29 +1,78 @@
 {
   "name": "protected-routes",
-  "version": "1.0.0",
-  "description": "Route Handler auth guard and Supabase middleware for protected paths",
+  "version": "2.0.0",
+  "description": "Next.js 16 proxy that refreshes sessions and redirects anonymous visitors away from app pages",
   "supportedArchitectures": ["atomic", "feature", "hybrid"],
   "supportedBackends": ["supabase", "firebase"],
-  "dependencies": ["api-response"],
+  "dependencies": ["api-response", "error-handling"],
   "npmDependencies": {},
   "npmDevDependencies": {},
   "environmentVariables": [],
   "files": {
     "atomic": [
-      { "source": "templates/protected-route.ts", "target": "src/app/api/protected/route.ts" },
-      { "source": "templates/middleware.ts", "target": "middleware.ts", "when": { "backend": ["supabase"] } }
+      {
+        "source": "templates/proxy.supabase.ts",
+        "target": "proxy.ts",
+        "when": {
+          "backend": ["supabase"]
+        }
+      },
+      {
+        "source": "templates/proxy.firebase.ts",
+        "target": "proxy.ts",
+        "when": {
+          "backend": ["firebase"]
+        }
+      },
+      {
+        "source": "templates/protected-route.ts",
+        "target": "src/app/api/me/route.ts"
+      }
     ],
     "feature": [
-      { "source": "templates/protected-route.ts", "target": "src/app/api/protected/route.ts" },
-      { "source": "templates/middleware.ts", "target": "middleware.ts", "when": { "backend": ["supabase"] } }
+      {
+        "source": "templates/proxy.supabase.ts",
+        "target": "proxy.ts",
+        "when": {
+          "backend": ["supabase"]
+        }
+      },
+      {
+        "source": "templates/proxy.firebase.ts",
+        "target": "proxy.ts",
+        "when": {
+          "backend": ["firebase"]
+        }
+      },
+      {
+        "source": "templates/protected-route.ts",
+        "target": "src/app/api/me/route.ts"
+      }
     ],
     "hybrid": [
-      { "source": "templates/protected-route.ts", "target": "src/app/api/protected/route.ts" },
-      { "source": "templates/middleware.ts", "target": "middleware.ts", "when": { "backend": ["supabase"] } }
+      {
+        "source": "templates/proxy.supabase.ts",
+        "target": "proxy.ts",
+        "when": {
+          "backend": ["supabase"]
+        }
+      },
+      {
+        "source": "templates/proxy.firebase.ts",
+        "target": "proxy.ts",
+        "when": {
+          "backend": ["firebase"]
+        }
+      },
+      {
+        "source": "templates/protected-route.ts",
+        "target": "src/app/api/me/route.ts"
+      }
     ]
   },
   "instructions": [
-    "Requires an installed auth module. Middleware is UX only: verify authentication, role, and ownership again inside Route Handlers and Server Components.",
-    "Firebase session cookies are verified with firebase-admin, which is not available on the edge runtime, so protect Firebase routes at the handler level instead of middleware."
+    "proxy.ts replaces the deprecated middleware.ts convention in Next.js 16. If you still have middleware.ts, delete it.",
+    "Edit isProtected() to list the page prefixes that require a session.",
+    "Proxy is a UX layer only. Keep calling requireUser() in every Route Handler and Server Component."
   ]
 }

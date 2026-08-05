@@ -3,26 +3,47 @@
   "version": "1.0.0",
   "description": "Validated, rate-limited generic file upload with signature detection",
   "supportedArchitectures": ["atomic", "feature", "hybrid"],
-  "dependencies": ["api-response", "rate-limit"],
-  "npmDependencies": { "file-type": "^21.0.0" },
+  "dependencies": ["api-response", "rate-limit", "error-handling"],
+  "npmDependencies": {
+    "file-type": "22.0.1"
+  },
   "npmDevDependencies": {},
   "environmentVariables": [],
   "files": {
     "atomic": [
-      { "source": "templates/route.ts", "target": "src/app/api/uploads/files/route.ts" },
-      { "source": "templates/file-uploader.tsx", "target": "{{aliases.components}}/organisms/file-uploader.tsx" }
+      {
+        "source": "templates/route.ts",
+        "target": "src/app/api/uploads/files/route.ts"
+      },
+      {
+        "source": "templates/file-uploader.tsx",
+        "target": "{{aliases.components}}/organisms/file-uploader.tsx"
+      }
     ],
     "feature": [
-      { "source": "templates/route.ts", "target": "src/app/api/uploads/files/route.ts" },
-      { "source": "templates/file-uploader.tsx", "target": "{{aliases.features}}/uploads/components/file-uploader.tsx" }
+      {
+        "source": "templates/route.ts",
+        "target": "src/app/api/uploads/files/route.ts"
+      },
+      {
+        "source": "templates/file-uploader.tsx",
+        "target": "{{aliases.features}}/uploads/components/file-uploader.tsx"
+      }
     ],
     "hybrid": [
-      { "source": "templates/route.ts", "target": "src/app/api/uploads/files/route.ts" },
-      { "source": "templates/file-uploader.tsx", "target": "{{aliases.features}}/uploads/components/file-uploader.tsx" }
+      {
+        "source": "templates/route.ts",
+        "target": "src/app/api/uploads/files/route.ts"
+      },
+      {
+        "source": "templates/file-uploader.tsx",
+        "target": "{{aliases.features}}/uploads/components/file-uploader.tsx"
+      }
     ]
   },
   "instructions": [
     "Requires an installed storage adapter. Keep the bucket private and authorize each read/download; do not make buckets public by default.",
     "Extend the MIME allowlist deliberately; never trust the browser-reported file.type alone."
-  ]
+  ],
+  "supportedBackends": ["supabase", "firebase"]
 }
