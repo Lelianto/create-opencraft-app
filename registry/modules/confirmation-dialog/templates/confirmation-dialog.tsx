@@ -1,4 +1,86 @@
 "use client";
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
-export function ConfirmationDialog({trigger,title,description,onConfirm}:{trigger:React.ReactNode;title:string;description:string;onConfirm:()=>void|Promise<void>}) { return <AlertDialog.Root><AlertDialog.Trigger asChild>{trigger}</AlertDialog.Trigger><AlertDialog.Portal><AlertDialog.Overlay className="fixed inset-0 bg-black/40"/><AlertDialog.Content className="fixed left-1/2 top-1/2 w-[min(90vw,28rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-6 shadow-xl"><AlertDialog.Title className="text-lg font-semibold">{title}</AlertDialog.Title><AlertDialog.Description className="mt-2 text-sm text-zinc-600">{description}</AlertDialog.Description><div className="mt-6 flex justify-end gap-3"><AlertDialog.Cancel className="rounded-md border px-4 py-2">Cancel</AlertDialog.Cancel><AlertDialog.Action className="rounded-md bg-red-600 px-4 py-2 text-white" onClick={onConfirm}>Confirm</AlertDialog.Action></div></AlertDialog.Content></AlertDialog.Portal></AlertDialog.Root> }
 
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+export interface ConfirmationDialogProps {
+  trigger: React.ReactNode;
+  title: string;
+  description: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  variant?: "default" | "destructive";
+  onConfirm: () => void | Promise<void>;
+}
+
+/**
+ * Reusable confirmation step for irreversible or sensitive actions:
+ * deletes, bulk operations, role changes, and anything else the user cannot undo.
+ *
+ * This is an interface affordance, not a security control. The server must
+ * independently authenticate the caller, authorise the action, and validate the
+ * payload — a client can always skip this dialog and call the endpoint directly.
+ */
+export function ConfirmationDialog({
+  trigger,
+  title,
+  description,
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  variant = "default",
+  onConfirm,
+}: ConfirmationDialogProps) {
+  const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState(false);
+
+  async function handleConfirm() {
+    setPending(true);
+    try {
+      await onConfirm();
+      setOpen(false);
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={pending}>{cancelLabel}</AlertDialogCancel>
+          {/*
+            `onClick` is intercepted so the dialog stays open while the action is
+            in flight, and closes only after it settles.
+          */}
+          <AlertDialogAction
+            className={cn(buttonVariants({ variant }))}
+            disabled={pending}
+            onClick={(event) => {
+              event.preventDefault();
+              void handleConfirm();
+            }}
+          >
+            {pending ? "Working…" : confirmLabel}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}

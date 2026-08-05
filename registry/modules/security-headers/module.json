@@ -1,1 +1,20 @@
-{"name":"security-headers","version":"1.0.0","description":"Next.js-compatible configurable security headers","supportedArchitectures":["atomic","feature","hybrid"],"dependencies":[],"npmDependencies":{},"npmDevDependencies":{},"environmentVariables":[],"files":{"atomic":[{"source":"templates/security.ts","target":"src/config/security.ts"}],"feature":[{"source":"templates/security.ts","target":"src/config/security.ts"}],"hybrid":[{"source":"templates/security.ts","target":"src/config/security.ts"}]},"instructions":["Apply exported headers from next.config.ts and tune CSP for every added third-party origin."]}
+{
+  "name": "security-headers",
+  "version": "2.0.0",
+  "description": "Strict nonce-based Content-Security-Policy upgrade for the baseline headers shipped in the template",
+  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "dependencies": [],
+  "npmDependencies": {},
+  "npmDevDependencies": {},
+  "environmentVariables": [],
+  "files": {
+    "atomic": [{ "source": "templates/csp.ts", "target": "{{aliases.lib}}/csp.ts" }],
+    "feature": [{ "source": "templates/csp.ts", "target": "{{aliases.lib}}/csp.ts" }],
+    "hybrid": [{ "source": "templates/csp.ts", "target": "{{aliases.lib}}/csp.ts" }]
+  },
+  "instructions": [
+    "Baseline headers (nosniff, Referrer-Policy, Permissions-Policy, HSTS, frame-ancestors) are already applied by next.config.ts via src/config/security.ts.",
+    "This module adds the STRICT nonce-based CSP. It forces dynamic rendering on the pages it covers — read the comments in src/lib/csp.ts before adopting it.",
+    "After wiring the nonce into proxy.ts, remove the Content-Security-Policy entry from src/config/security.ts so the static header does not shadow it."
+  ]
+}
