@@ -65,6 +65,22 @@ const program = new Command()
   .option("--no-install", "Skip installing dependencies")
   .option("--no-git", "Skip initializing git repository");
 
+/**
+ * npm package names must be lowercase and URL-safe. The name is written into the
+ * generated package.json, so an invalid value only surfaces later as a confusing
+ * install failure — validate it up front, for flags as well as prompts.
+ */
+const projectNamePattern = /^[a-z0-9][a-z0-9._-]*$/;
+
+function assertValidProjectName(value: string): string {
+  if (!projectNamePattern.test(value)) {
+    throw new Error(
+      `Invalid project name: "${value}". Use lowercase letters, numbers, hyphens, dots, or underscores, starting with a letter or number. Pass a bare name — run the command from the directory where you want the project created.`,
+    );
+  }
+  return value;
+}
+
 program.action(async (projectNameArg: string | undefined, flags: CreateFlags) => {
   p.intro("OpenCraft");
 
@@ -78,16 +94,19 @@ program.action(async (projectNameArg: string | undefined, flags: CreateFlags) =>
     return answer;
   };
 
-  const name = await ask<string>(projectNameArg, () =>
+  const rawName = await ask<string>(projectNameArg, () =>
     p.text({
       message: "Project name?",
       placeholder: "my-app",
       validate: (val) =>
-        /^[a-z0-9][a-z0-9-]*$/.test(val ?? "")
+        projectNamePattern.test(val ?? "")
           ? undefined
           : "Use lowercase letters, numbers, and hyphens",
     }),
   );
+
+  // Applies to the --yes / argument path too, not just the prompt.
+  const name = assertValidProjectName(rawName);
 
   const defaultPm = await detectPackageManager(process.cwd());
   const pmInput = await ask<string>(flags.packageManager, async () =>

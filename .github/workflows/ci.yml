@@ -83,17 +83,44 @@ jobs:
       - name: Build CLI Packages
         run: pnpm run build
 
+      # The sample app is generated OUTSIDE the repository, in the runner's temp
+      # directory.
+      #
+      # Generating it inside $GITHUB_WORKSPACE silently breaks the install: the repo
+      # root has a pnpm-workspace.yaml, so `pnpm install` in a subdirectory walks up,
+      # finds the workspace root, sees the sample is not covered by the workspace
+      # globs, and installs nothing locally. The app then has no node_modules and
+      # type-check fails with "cannot find module" for every dependency, including
+      # react. Keeping it outside the workspace also matches how a real user
+      # scaffolds a project.
       - name: Generate sample app
-        run: node "$GITHUB_WORKSPACE/packages/create-opencraft-app/dist/src/bin.js" sample-${{ matrix.label }} --architecture ${{ matrix.architecture }} --backend ${{ matrix.backend }} --auth ${{ matrix.auth }} --storage ${{ matrix.storage }} --modules ${{ matrix.modules }} --package-manager pnpm --yes --no-install --no-git
+        # Run from the temp directory and pass a bare name, so the project name
+        # stays a valid npm package name rather than an absolute path.
+        working-directory: ${{ runner.temp }}
+        run: |
+          node "$GITHUB_WORKSPACE/packages/create-opencraft-app/dist/src/bin.js" \
+            "sample-${{ matrix.label }}" \
+            --architecture ${{ matrix.architecture }} \
+            --backend ${{ matrix.backend }} \
+            --auth ${{ matrix.auth }} \
+            --storage ${{ matrix.storage }} \
+            --modules ${{ matrix.modules }} \
+            --package-manager pnpm --yes --no-install --no-git
 
       - name: Install generated app dependencies
-        working-directory: ./sample-${{ matrix.label }}
-        run: pnpm install
+        working-directory: ${{ runner.temp }}/sample-${{ matrix.label }}
+        run: pnpm install --ignore-workspace
+
+      - name: Verify dependencies actually installed
+        working-directory: ${{ runner.temp }}/sample-${{ matrix.label }}
+        # Fail loudly here rather than surfacing as hundreds of confusing
+        # "cannot find module" type errors in the next step.
+        run: test -d node_modules/next || { echo "::error::pnpm install did not populate node_modules"; exit 1; }
 
       - name: Type-check generated app
-        working-directory: ./sample-${{ matrix.label }}
+        working-directory: ${{ runner.temp }}/sample-${{ matrix.label }}
         run: pnpm run type-check
 
       - name: Build generated app
-        working-directory: ./sample-${{ matrix.label }}
+        working-directory: ${{ runner.temp }}/sample-${{ matrix.label }}
         run: pnpm run build
