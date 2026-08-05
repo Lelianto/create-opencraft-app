@@ -4,6 +4,15 @@
   "description": "Create a modular, security-first Next.js app",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lelianto/create-opencraft-app.git",
+    "directory": "packages/create-opencraft-app"
+  },
+  "homepage": "https://github.com/Lelianto/create-opencraft-app#readme",
+  "bugs": {
+    "url": "https://github.com/Lelianto/create-opencraft-app/issues"
+  },
   "bin": {
     "create-opencraft-app": "dist/src/bin.js"
   },

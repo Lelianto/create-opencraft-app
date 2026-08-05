@@ -22,6 +22,11 @@ jobs:
     name: Create Release PR or Publish via Changesets
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write # create tags and GitHub releases
+      pull-requests: write # open the release PR
+      id-token: write # required for npm trusted publishing (OIDC) and provenance
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -34,9 +39,30 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          # Trusted publishing requires Node >= 22.14.0 and npm >= 11.5.1.
+          # Node 20 bundles npm 10.x, where OIDC does not exist — which is why
+          # publishing failed with E404 on every PUT.
+          node-version: 24.x
           registry-url: "https://registry.npmjs.org/"
-          cache: "pnpm"
+
+      - name: Ensure npm supports trusted publishing
+        # Node 24 bundles npm 11.x, but the exact patch varies by Node release, and
+        # OIDC needs >= 11.5.1. Upgrading explicitly makes this deterministic
+        # instead of dependent on whichever Node 24.x the runner resolves.
+        run: |
+          npm install -g npm@latest
+          echo "node $(node -v) / npm $(npm -v)"
+          node -e "
+            const version = require('node:child_process').execSync('npm -v').toString().trim();
+            const [major, minor, patch] = version.split('.').map(Number);
+            const supported =
+              major > 11 || (major === 11 && (minor > 5 || (minor === 5 && patch >= 1)));
+            if (!supported) {
+              console.error('npm ' + version + ' is too old for OIDC trusted publishing (need >= 11.5.1)');
+              process.exit(1);
+            }
+            console.log('npm ' + version + ' supports OIDC trusted publishing');
+          "
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -57,4 +83,14 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # No NPM_TOKEN on purpose. This repository publishes via npm trusted
+          # publishing (OIDC), configured per package on npmjs.com against
+          # Lelianto/create-opencraft-app + publish.yml. The short-lived credential
+          # is minted from the `id-token: write` permission above.
+          #
+          # Do NOT set NODE_AUTH_TOKEN here: the .npmrc that actions/setup-node
+          # writes interpolates it, and an empty value produces an unauthenticated
+          # request that the registry answers with a misleading 404.
+          #
+          # Every package needs its own trusted publisher entry — npm allows one
+          # per package, and there is no scope-wide setting.
