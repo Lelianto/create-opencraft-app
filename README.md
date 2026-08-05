@@ -458,8 +458,19 @@ status and suggests `diff`/`update` instead of reinstalling.
 
 ## Publishing to npm
 
-Packages are configured but **not published**. To verify packaging without
-publishing:
+Releases are driven by Changesets and published from CI:
+
+1. `pnpm changeset` — describe the change (creates a changeset file).
+2. Merge, then run the **Publish to NPM** workflow from the Actions tab
+   (`workflow_dispatch`, manual on purpose). It versions packages, builds,
+   verifies the tarballs, and publishes everything with a pending release.
+
+Publishing uses **npm trusted publishing (OIDC)** — no `NPM_TOKEN` is configured.
+Each package needs its own trusted publisher entry on npmjs.com pointing at this
+repository and the `publish.yml` workflow. The workflow runs Node 24 / npm 11+,
+which OIDC requires.
+
+To verify packaging without publishing:
 
 ```bash
 pnpm run build
@@ -478,18 +489,6 @@ pnpm install
 
 This rewrites every `package.json` name, workspace dependency, and source import.
 `create-opencraft-app` is unscoped and unaffected.
-
-Releases use Changesets:
-
-```bash
-pnpm changeset          # describe the change
-pnpm version-packages   # apply version bumps
-pnpm release            # build then publish
-```
-
-Note that the npm account backing `@antihero` has 2FA enabled, so interactive
-`npm publish` fails with `EOTP`. Publish from CI with a granular access token that
-has "Bypass two-factor authentication" enabled, or pass `--otp=<code>`.
 
 ---
 
