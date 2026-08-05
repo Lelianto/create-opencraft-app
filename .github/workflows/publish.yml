@@ -104,6 +104,29 @@ jobs:
       - name: Verify Package Tarballs
         run: pnpm run pack:check
 
+      # TEMPORARY ISOLATION STEP — remove once publishing works.
+      #
+      # Diagnostics prove the workflow side is correct: Node 24.18/npm 11.16, OIDC
+      # request URL present, and no .npmrc anywhere. Yet npm still answers
+      # ENEEDAUTH, which means the OIDC token exchange is being rejected.
+      #
+      # Two candidates remain, and this separates them by publishing ONE package
+      # with plain npm, bypassing pnpm -> turbo -> changeset publish entirely:
+      #
+      #   - It succeeds  => the wrapper was interfering (pnpm injects npm_config_*
+      #                     env vars, visible as "Unknown env config" warnings).
+      #   - It ENEEDAUTHs => the wrapper is innocent and the npm-side trusted
+      #                     publisher config for this package does not match.
+      #
+      # continue-on-error so the normal changesets path still runs afterwards.
+      - name: Isolate OIDC (direct npm publish of one package)
+        id: isolate
+        continue-on-error: true
+        working-directory: packages/config
+        run: |
+          echo "Attempting: npm publish @antihero/config@0.2.0 via plain npm"
+          npm publish --access public
+
       - name: Create Release Pull Request or Publish
         uses: changesets/action@v1
         with:
