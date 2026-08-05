@@ -343,6 +343,179 @@ node scripts/rename-scope.mjs @your-scope
 
 ---
 
+## Security Model
+
+OpenCraft aims to be honest about what it does and does not protect. Every claim
+below is implemented in generated code, and every limitation is stated.
+
+### What is enforced by default
+
+| Concern | How it is handled |
+| --- | --- |
+| Authentication | `requireUser()` verifies the session **server-side** on every request. Supabase uses `auth.getUser()` (revalidates the token); Firebase uses `verifySessionCookie(token, true)` (honours revocation). |
+| Authorization / IDOR | Every repository query is scoped by `ownerId`, and a record belonging to another user returns `404`, not `403`, so responses do not confirm existence. |
+| Input validation | Zod on the server for body, query, and route params. `.strict()` rejects unknown keys, which blocks mass assignment. |
+| SQL injection | All access goes through the Supabase query builder or parameterised RPC. No string-concatenated SQL anywhere. |
+| NoSQL abuse | Collection names are constants; sort fields resolve through an allowlist. Raw operators, field paths, and collection names from clients are never accepted. |
+| Upload safety | Magic-byte sniffing (never `file.type`), MIME allowlist, size and pixel ceilings, re-encode to WebP, randomised storage keys, per-user rate limits, SVG rejected. |
+| Security headers | `nosniff`, `Referrer-Policy`, `Permissions-Policy`, HSTS, and CSP with `frame-ancestors 'none'`, applied to every response by `next.config.ts`. |
+| Open redirect | OAuth callback validates `next` against the app's own origin and rejects protocol-relative URLs. |
+| SSRF | `safeFetch()` enforces a protocol and hostname allowlist, blocks private/loopback/link-local/CGNAT ranges (including IPv4-mapped IPv6), re-validates every redirect hop, and caps time and response size. |
+| Error handling | Unknown errors collapse to a generic `INTERNAL` failure. Stack traces and provider messages are never returned to clients. |
+| Secret handling | `.env.example` contains names only. `logError()` emits a code and short detail, never tokens, cookies, or request bodies. |
+
+### Stated limitations
+
+These are real gaps. They are documented rather than papered over.
+
+- **The default CSP allows `'unsafe-inline'` for scripts.** Next.js injects inline
+  bootstrap scripts, so a policy without either `'unsafe-inline'` or a per-request
+  nonce breaks the App Router. The default is therefore useful but is *not* a
+  complete XSS defence. Run `opencraft add security-headers` for the strict
+  nonce-based policy — at the cost of forcing dynamic rendering.
+- **`proxy.ts` is not an authorization boundary.** It refreshes sessions and
+  redirects anonymous visitors for convenience. It can be bypassed and never sees
+  per-resource ownership, so every Route Handler re-checks identity itself.
+- **Rate limiting is in-memory by default.** That means per-instance. On
+  serverless or multi-region deployments an attacker gets one bucket per instance.
+  Move to Redis or Upstash before relying on it.
+- **SSRF protection cannot fully stop DNS rebinding.** The hostname is re-resolved
+  by `fetch` after validation. The hostname allowlist is the real control — keep
+  it narrow. See the comments in `src/lib/safe-fetch.ts`.
+- **Confirmation dialogs are UX, not security.** The server always re-authorises.
+- **Provider rules are a backstop, not the control.** Supabase RLS and Firestore
+  Rules are generated and should be deployed, but the Admin SDK and service-role
+  keys bypass them — which is why ownership is also enforced in application code.
+
+---
+
+## Environment Setup
+
+Secrets live in `.env.local`, which is git-ignored. `.env.example` is committed and
+contains variable **names only** — modules append to it as you install them.
+
+```bash
+cp .env.example .env.local
+# then fill in the values
+```
+
+`opencraft doctor` reports which required variables are missing by reading
+`.env.local` / `.env`. It prints names and availability only, never values.
+
+| Provider | Variables |
+| --- | --- |
+| Supabase | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_APP_URL` |
+| Firebase | `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`, plus the `NEXT_PUBLIC_FIREBASE_*` client keys |
+| Vercel Blob | `BLOB_READ_WRITE_TOKEN` |
+
+`FIREBASE_PRIVATE_KEY` is stored with literal `\n` sequences by most hosts; the
+generated code converts them back to real newlines.
+
+### Provider setup
+
+- **Supabase** — enable Google under Authentication → Providers, register
+  `<origin>/auth/callback` as a redirect URL, then run `supabase/products.sql` in
+  the SQL editor to create the table, indexes, and RLS policies.
+- **Firebase** — enable Google sign-in, create a service account for
+  `firebase-admin`, and deploy rules with
+  `firebase deploy --only firestore:rules`.
+
+---
+
+## Update & Conflict Handling
+
+Generated code belongs to your project. OpenCraft therefore treats any local edit
+as authoritative and will not silently overwrite it.
+
+Every installed file's checksum is recorded in `opencraft.config.json`, which lets
+the CLI distinguish three states:
+
+| State | Meaning |
+| --- | --- |
+| `unchanged` | Byte-identical to the registry template. Safe to update. |
+| `customised` | You edited it. Never overwritten without `--overwrite`. |
+| `missing` | Recorded but deleted from disk. |
+
+```bash
+opencraft diff image-upload      # unified diff of local vs registry
+opencraft update image-upload    # re-applies only if nothing was customised
+opencraft add image-upload --dry-run
+```
+
+**Honest limitation:** `update` is deliberately conservative. If *any* file of a
+module was edited, the update aborts and asks you to reconcile by hand. There is
+no three-way merge. This is a real constraint of the current design, not an
+oversight — silently merging into code you own is worse than refusing.
+
+`remove` is equally cautious: it refuses when another installed module depends on
+the target, refuses to delete files you customised, and never uninstalls npm
+packages, since your own code may import them.
+
+All commands are idempotent. Re-running `add` for an installed module reports its
+status and suggests `diff`/`update` instead of reinstalling.
+
+---
+
+## Publishing to npm
+
+Packages are configured but **not published**. To verify packaging without
+publishing:
+
+```bash
+pnpm run build
+pnpm run pack:check   # npm pack --dry-run for every publishable package
+```
+
+### Changing the npm scope
+
+The default scope is `@antihero`. Package names are centralised so switching is a
+single command:
+
+```bash
+node scripts/rename-scope.mjs @your-scope
+pnpm install
+```
+
+This rewrites every `package.json` name, workspace dependency, and source import.
+`create-opencraft-app` is unscoped and unaffected.
+
+Releases use Changesets:
+
+```bash
+pnpm changeset          # describe the change
+pnpm version-packages   # apply version bumps
+pnpm release            # build then publish
+```
+
+Note that the npm account backing `@antihero` has 2FA enabled, so interactive
+`npm publish` fails with `EOTP`. Publish from CI with a granular access token that
+has "Bypass two-factor authentication" enabled, or pass `--otp=<code>`.
+
+---
+
+## Roadmap
+
+- Three-way merge for `opencraft update` on customised files
+- Redis/Upstash rate-limit adapter
+- Additional auth methods beyond Google (email OTP, passkeys)
+- Drizzle and Prisma persistence variants for `crud-example`
+- `apps/docs` documentation site
+
+---
+
+## Contributing a Registry Module
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). In short:
+
+1. Create `registry/modules/<name>/module.json`.
+2. Add templates under `registry/modules/<name>/templates/`.
+3. Map targets per architecture using placeholders (`{{dir.domain}}`,
+   `{{aliases.components}}`, `{{dir.sharedComponents}}`).
+4. Declare `dependencies`, `npmDependencies`, and `environmentVariables`.
+5. Run `pnpm run registry:validate` and add a test.
+
+---
+
 ## License
 
 Distributed under the [MIT License](LICENSE).
