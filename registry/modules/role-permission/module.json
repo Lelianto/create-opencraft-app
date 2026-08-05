@@ -1,17 +1,41 @@
 {
   "name": "role-permission",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Role hierarchy and ownership checks for server-side authorization",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
-  "supportedBackends": ["supabase", "firebase"],
-  "dependencies": [],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
+  "supportedBackends": [
+    "supabase",
+    "firebase"
+  ],
+  "dependencies": [
+    "error-handling"
+  ],
   "npmDependencies": {},
   "npmDevDependencies": {},
   "environmentVariables": [],
   "files": {
-    "atomic": [{ "source": "templates/roles.ts", "target": "{{aliases.lib}}/roles.ts" }],
-    "feature": [{ "source": "templates/roles.ts", "target": "{{aliases.lib}}/roles.ts" }],
-    "hybrid": [{ "source": "templates/roles.ts", "target": "{{aliases.lib}}/roles.ts" }]
+    "atomic": [
+      {
+        "source": "templates/roles.ts",
+        "target": "{{aliases.lib}}/roles.ts"
+      }
+    ],
+    "feature": [
+      {
+        "source": "templates/roles.ts",
+        "target": "{{aliases.lib}}/roles.ts"
+      }
+    ],
+    "hybrid": [
+      {
+        "source": "templates/roles.ts",
+        "target": "{{aliases.lib}}/roles.ts"
+      }
+    ]
   },
   "instructions": [
     "Populate the role on AppUser from provider metadata: Supabase auth.users raw_app_meta_data.role or Firebase custom claims. Never trust a client-supplied role.",

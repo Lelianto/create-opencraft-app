@@ -1,8 +1,12 @@
 {
   "name": "data-table",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Typed, accessible server-rendered data table with empty state",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
   "dependencies": [],
   "npmDependencies": {},
   "npmDevDependencies": {},
@@ -15,7 +19,10 @@
       }
     ],
     "feature": [
-      { "source": "templates/data-table.tsx", "target": "{{aliases.components}}/data-table.tsx" }
+      {
+        "source": "templates/data-table.tsx",
+        "target": "{{aliases.components}}/data-table.tsx"
+      }
     ],
     "hybrid": [
       {

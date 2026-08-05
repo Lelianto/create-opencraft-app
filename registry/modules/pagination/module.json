@@ -1,8 +1,12 @@
 {
   "name": "pagination",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "URL-driven pagination control for server-rendered lists",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
   "dependencies": [],
   "npmDependencies": {},
   "npmDevDependencies": {},
@@ -15,7 +19,10 @@
       }
     ],
     "feature": [
-      { "source": "templates/pagination.tsx", "target": "{{aliases.components}}/pagination.tsx" }
+      {
+        "source": "templates/pagination.tsx",
+        "target": "{{aliases.components}}/pagination.tsx"
+      }
     ],
     "hybrid": [
       {

@@ -1,47 +1,90 @@
 "use client";
 
+import type { ReactNode } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+
+/**
+ * Generic table built on the vendored shadcn primitives.
+ *
+ * Uses theme tokens rather than hardcoded colours, so it follows light/dark mode.
+ * The previous version rendered a raw `<table>` with `bg-white` and `text-zinc-500`
+ * baked in, which broke in dark mode and diverged from the rest of the UI.
+ *
+ * Pass only data the caller is authorised to see. This component performs no
+ * filtering — authorization belongs in the Route Handler or Server Component that
+ * loaded the rows.
+ */
 export interface DataTableColumn<T> {
   key: string;
-  header: string;
-  cell: (item: T) => React.ReactNode;
+  header: ReactNode;
+  cell: (item: T) => ReactNode;
   className?: string;
+  headerClassName?: string;
 }
 
-interface DataTableProps<T> {
+export function DataTable<T>({
+  data,
+  columns,
+  rowKey,
+  emptyLabel = "No results.",
+  loading = false,
+  skeletonRows = 3,
+}: {
   data: T[];
   columns: DataTableColumn<T>[];
   rowKey: (item: T) => string;
   emptyLabel?: string;
-}
-
-export function DataTable<T>({ data, columns, rowKey, emptyLabel = "No results." }: DataTableProps<T>) {
-  if (data.length === 0) {
-    return <p className="rounded-xl border bg-white p-8 text-center text-sm text-zinc-500">{emptyLabel}</p>;
+  loading?: boolean;
+  skeletonRows?: number;
+}) {
+  if (loading) {
+    return (
+      <div className="space-y-2" aria-busy="true" aria-label="Loading">
+        {Array.from({ length: skeletonRows }, (_, index) => (
+          <Skeleton key={index} className="h-12 w-full" />
+        ))}
+      </div>
+    );
   }
+
+  if (data.length === 0) {
+    return (
+      <p className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
+        {emptyLabel}
+      </p>
+    );
+  }
+
   return (
-    <div className="overflow-hidden rounded-xl border bg-white">
-      <table className="w-full text-left text-sm">
-        <thead className="border-b bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500">
-          <tr>
-            {columns.map((column) => (
-              <th key={column.key} className={`px-4 py-3 font-medium ${column.className ?? ""}`}>
-                {column.header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y">
-          {data.map((item) => (
-            <tr key={rowKey(item)}>
-              {columns.map((column) => (
-                <td key={column.key} className={`px-4 py-3 ${column.className ?? ""}`}>
-                  {column.cell(item)}
-                </td>
-              ))}
-            </tr>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          {columns.map((column) => (
+            <TableHead key={column.key} className={column.headerClassName}>
+              {column.header}
+            </TableHead>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {data.map((item) => (
+          <TableRow key={rowKey(item)}>
+            {columns.map((column) => (
+              <TableCell key={column.key} className={column.className}>
+                {column.cell(item)}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

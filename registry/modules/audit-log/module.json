@@ -1,21 +1,34 @@
 {
   "name": "audit-log",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Secret-redacting audit logger for security-sensitive operations",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
   "dependencies": [],
   "npmDependencies": {},
   "npmDevDependencies": {},
   "environmentVariables": [],
   "files": {
     "atomic": [
-      { "source": "templates/audit-log.ts", "target": "{{aliases.infrastructure}}/audit-log.ts" }
+      {
+        "source": "templates/audit-log.ts",
+        "target": "{{aliases.infrastructure}}/audit-log.ts"
+      }
     ],
     "feature": [
-      { "source": "templates/audit-log.ts", "target": "{{aliases.infrastructure}}/audit-log.ts" }
+      {
+        "source": "templates/audit-log.ts",
+        "target": "{{aliases.infrastructure}}/audit-log.ts"
+      }
     ],
     "hybrid": [
-      { "source": "templates/audit-log.ts", "target": "{{aliases.infrastructure}}/audit-log.ts" }
+      {
+        "source": "templates/audit-log.ts",
+        "target": "{{aliases.infrastructure}}/audit-log.ts"
+      }
     ]
   },
   "instructions": [

@@ -1,52 +1,92 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
 
-interface PaginationProps {
+import { useRouter, useSearchParams } from "next/navigation";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+/**
+ * URL-driven pagination.
+ *
+ * Page state lives in the query string so results are linkable and survive a
+ * refresh. Page 1 omits the parameter entirely, keeping canonical URLs clean.
+ *
+ * Note: `useSearchParams` opts the nearest boundary into client-side rendering, so
+ * render this inside a `<Suspense>` boundary if the surrounding page is static.
+ */
+export function Pagination({
+  page,
+  totalPages,
+  siblings = 2,
+}: {
   page: number;
   totalPages: number;
-}
-
-export function Pagination({ page, totalPages }: PaginationProps) {
+  siblings?: number;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  function go(nextPage: number) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (nextPage <= 1) params.delete("page");
-    else params.set("page", String(nextPage));
-    router.push(`?${params.toString()}`);
-  }
-
   if (totalPages <= 1) return null;
 
+  const current = Math.min(Math.max(1, page), totalPages);
+
+  function go(nextPage: number) {
+    const target = Math.min(Math.max(1, nextPage), totalPages);
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (target <= 1) params.delete("page");
+    else params.set("page", String(target));
+
+    const query = params.toString();
+    router.push(query ? `?${query}` : "?", { scroll: false });
+  }
+
   const pages: number[] = [];
-  for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) pages.push(i);
+  for (let p = Math.max(1, current - siblings); p <= Math.min(totalPages, current + siblings); p += 1) {
+    pages.push(p);
+  }
 
   return (
-    <nav className="flex items-center gap-2" aria-label="Pagination">
-      <button
-        className="rounded-md border px-3 py-1 text-sm disabled:opacity-40"
-        disabled={page <= 1}
-        onClick={() => go(page - 1)}
+    <nav className="flex items-center gap-1" aria-label="Pagination">
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={current <= 1}
+        onClick={() => go(current - 1)}
+        aria-label="Previous page"
       >
+        <ChevronLeftIcon />
         Previous
-      </button>
+      </Button>
+
+      {pages[0]! > 1 ? <span className="px-2 text-muted-foreground">…</span> : null}
+
       {pages.map((p) => (
-        <button
+        <Button
           key={p}
-          className={`rounded-md border px-3 py-1 text-sm ${p === page ? "bg-zinc-900 text-white" : ""}`}
+          variant={p === current ? "default" : "outline"}
+          size="sm"
           onClick={() => go(p)}
+          aria-label={`Page ${p}`}
+          aria-current={p === current ? "page" : undefined}
         >
           {p}
-        </button>
+        </Button>
       ))}
-      <button
-        className="rounded-md border px-3 py-1 text-sm disabled:opacity-40"
-        disabled={page >= totalPages}
-        onClick={() => go(page + 1)}
+
+      {pages[pages.length - 1]! < totalPages ? (
+        <span className="px-2 text-muted-foreground">…</span>
+      ) : null}
+
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={current >= totalPages}
+        onClick={() => go(current + 1)}
+        aria-label="Next page"
       >
         Next
-      </button>
+        <ChevronRightIcon />
+      </Button>
     </nav>
   );
 }
