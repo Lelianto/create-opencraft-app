@@ -17,6 +17,17 @@ const packages = readdirSync(packagesRoot).filter((name) => {
 
 const secretPattern = /(sk-[A-Za-z0-9]{20,}|AIza[0-9A-Za-z_-]{20,}|-----BEGIN (?:RSA |EC |)PRIVATE KEY-----|eyJ[a-zA-Z0-9_-]{10,}\.[a-zA-Z0-9_-]{10,}\.[a-zA-Z0-9_-]{10,})/;
 
+// Reported in diagnostics, because `npm pack --json` output differs by major version.
+const npmVersion = (() => {
+  try {
+    return execSync("npm -v", { encoding: "utf8" }).trim();
+  } catch {
+    return "unknown";
+  }
+})();
+
+console.log(`npm ${npmVersion}`);
+
 let failed = false;
 
 for (const name of packages) {
@@ -55,10 +66,38 @@ for (const name of packages) {
   }
 
   try {
-    const output = execSync("npm pack --dry-run --json", { cwd: dir, encoding: "utf8" });
-    const result = JSON.parse(output)[0];
-    if (!result || result.error) {
-      console.error(`  ✗ npm pack --dry-run failed: ${result?.error ?? "unknown"}`);
+    // `npm pack --json` changed shape in npm 12: it used to return an array of
+    // results, and now returns an object keyed by package name. Support both, so
+    // this script works on the npm bundled with Node 20 as well as npm 12+.
+    const output = execSync("npm pack --dry-run --json", {
+      cwd: dir,
+      encoding: "utf8",
+      // Keep stderr separate; npm writes config warnings there and they would
+      // otherwise corrupt the JSON on stdout.
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+
+    let parsed;
+    try {
+      parsed = JSON.parse(output);
+    } catch {
+      console.error("  ✗ npm pack --dry-run did not return valid JSON:");
+      console.error(`    ${output.slice(0, 300).replace(/\n/g, "\n    ")}`);
+      failed = true;
+      continue;
+    }
+
+    const result = Array.isArray(parsed) ? parsed[0] : Object.values(parsed)[0];
+
+    if (!result) {
+      console.error(
+        `  ✗ npm pack --dry-run returned no result (npm ${npmVersion}); keys: ${Object.keys(parsed).join(", ") || "none"}`,
+      );
+      failed = true;
+      continue;
+    }
+    if (result.error) {
+      console.error(`  ✗ npm pack --dry-run failed: ${JSON.stringify(result.error)}`);
       failed = true;
       continue;
     }

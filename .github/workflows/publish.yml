@@ -46,11 +46,14 @@ jobs:
           registry-url: "https://registry.npmjs.org/"
 
       - name: Ensure npm supports trusted publishing
-        # Node 24 bundles npm 11.x, but the exact patch varies by Node release, and
-        # OIDC needs >= 11.5.1. Upgrading explicitly makes this deterministic
-        # instead of dependent on whichever Node 24.x the runner resolves.
+        # Node 24.x bundles npm 11.17+, which already satisfies the >= 11.5.1 that
+        # OIDC requires — so no global npm install is needed.
+        #
+        # Deliberately NOT running `npm install -g npm@latest`: that pulls npm 12,
+        # which changed `npm pack --json` from an array to an object keyed by
+        # package name and broke pack:check. Use what Node ships, and fail loudly
+        # here if a future Node image regresses below the OIDC minimum.
         run: |
-          npm install -g npm@latest
           echo "node $(node -v) / npm $(npm -v)"
           node -e "
             const version = require('node:child_process').execSync('npm -v').toString().trim();
