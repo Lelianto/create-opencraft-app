@@ -58,9 +58,30 @@ for (const name of readdirSync(modulesRoot)) {
       if (!existsSync(source)) issues.push(`missing template ${entry.source} (${architecture})`);
       if (typeof entry.target !== "string") issues.push(`bad target in ${architecture}`);
       else {
-        const hasPlaceholder = /\{\{aliases\.(components|features|infrastructure|lib)\}\}|\{\{backend\}\}|\{\{storage\}\}/.test(entry.target);
-        const rootFile = /^[a-zA-Z0-9._-]+\.tsx?$/.test(entry.target);
-        if (!hasPlaceholder && !entry.target.startsWith("src/") && !rootFile) issues.push(`target should be a template or src/ path: ${entry.target}`);
+        const hasPlaceholder =
+          /\{\{aliases\.(components|features|infrastructure|lib)\}\}|\{\{dir\.(domain|sharedComponents)\}\}|\{\{backend\}\}|\{\{storage\}\}/.test(
+            entry.target,
+          );
+        // A small allowlist of files that legitimately live at the project root
+        // or in a provider-owned directory.
+        const allowedRootTargets = new Set([
+          "proxy.ts",
+          "firestore.rules",
+          "storage.rules",
+          "firebase.json",
+        ]);
+        const allowedPrefixes = ["src/", "supabase/", "drizzle/", "prisma/"];
+
+        const isAllowed =
+          hasPlaceholder ||
+          allowedRootTargets.has(entry.target) ||
+          allowedPrefixes.some((prefix) => entry.target.startsWith(prefix));
+
+        if (!isAllowed) {
+          issues.push(
+            `target must use a placeholder, start with ${allowedPrefixes.join("/")}, or be an allowed root file: ${entry.target}`,
+          );
+        }
       }
     }
   }

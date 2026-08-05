@@ -4,8 +4,15 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["src/**", "tsconfig.json", "package.json", "registry/**", "templates/**"],
-      "outputs": ["dist/**"]
+      "inputs": [
+        "src/**",
+        "tsconfig.json",
+        "tsconfig.build.json",
+        "package.json",
+        "$TURBO_ROOT$/templates/**",
+        "$TURBO_ROOT$/registry/**"
+      ],
+      "outputs": ["dist/**", "templates/**", "registry/**"]
     },
     "type-check": {
       "dependsOn": ["^build"],

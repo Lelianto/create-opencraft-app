@@ -62,7 +62,7 @@ for (const name of packages) {
       failed = true;
       continue;
     }
-    console.log(`  ✓ pack contains ${result.fileCount} files, ${result.size} bytes`);
+    console.log(`  ✓ pack contains ${result.files?.length ?? result.fileCount ?? "?"} files, ${result.size} bytes`);
 
     // Scan packed files for secrets.
     const dirsToScan = (manifest.files ?? []).filter((entry) => existsSync(path.join(dir, entry)));

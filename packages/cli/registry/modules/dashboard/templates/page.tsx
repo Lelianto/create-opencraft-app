@@ -1,3 +1,0 @@
-const stats=[{label:"Projects",value:"12"},{label:"Members",value:"8"},{label:"Activity",value:"96%"}];
-export default function DashboardPage(){return <main className="mx-auto max-w-6xl p-8"><h1 className="text-3xl font-bold">Dashboard</h1><p className="mt-2 text-zinc-600">A clear starting point for your product.</p><section className="mt-8 grid gap-4 sm:grid-cols-3">{stats.map((stat)=><article className="rounded-xl border bg-white p-5" key={stat.label}><p className="text-sm text-zinc-500">{stat.label}</p><p className="mt-2 text-3xl font-semibold">{stat.value}</p></article>)}</section></main>}
-

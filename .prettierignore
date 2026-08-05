@@ -3,3 +3,13 @@ dist
 .next
 pnpm-lock.yaml
 
+# Generated-project sources are NOT formatted here.
+#
+# Templates contain `{{placeholder}}` tokens. Inside JSX, `{{projectName}}` is
+# syntactically valid (an object literal in an expression container), so Prettier
+# happily rewrites it to `{{ projectName }}` — which no longer matches the exact
+# string the generator substitutes, silently breaking generation.
+#
+# These files are formatted by their own project's tooling after generation.
+templates/
+registry/**/templates/
