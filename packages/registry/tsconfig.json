@@ -1,8 +1,22 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": ".",
-    "noEmit": true
+    "noEmit": true,
+    // No `rootDir` and no project references here: the template tests deliberately
+    // import registry template sources from outside this package, which `rootDir`
+    // forbids and `composite` would require to be listed explicitly.
+    "composite": false,
+    "incremental": false,
+    // Mirrors the vitest aliases so `tsc` resolves the same specifiers the tests do.
+    // Without these, template sources fail to type-check on `server-only` and the
+    // project-relative `@/...` imports a generated app would provide.
+    // No `baseUrl`: it is deprecated in TypeScript 6+, and `paths` now resolves
+    // relative to this file.
+    "paths": {
+      "server-only": ["./test/stubs/server-only.ts"],
+      "@/infrastructure/auth": ["./test/stubs/auth.ts"],
+      "@/lib/errors": ["../../registry/modules/error-handling/templates/errors.ts"]
+    }
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"]
 }
