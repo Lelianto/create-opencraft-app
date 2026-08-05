@@ -1,6 +1,6 @@
 {
   "name": "create-opencraft-app",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Create a modular, security-first Next.js app",
   "type": "module",
   "license": "MIT",
