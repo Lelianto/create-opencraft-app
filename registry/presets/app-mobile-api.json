@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencraft.dev/schema/preset.schema.json",
+  "name": "app-mobile-api",
+  "description": "Backend API plus web admin for a mobile app: Firebase auth, protected API responses, CRUD example, and image upload.",
+  "architecture": "feature",
+  "backend": "firebase",
+  "auth": "google",
+  "storage": "firebase",
+  "modules": [
+    "protected-routes",
+    "api-response",
+    "crud-example",
+    "image-upload"
+  ]
+}

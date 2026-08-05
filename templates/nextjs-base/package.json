@@ -12,7 +12,8 @@
     "start": "next start",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "postinstall": "opencraft-skills install --target all"
   },
   "dependencies": {
     "@hookform/resolvers": "5.7.1",
@@ -20,6 +21,8 @@
     "clsx": "2.1.1",
     "lucide-react": "1.28.0",
     "next": "16.3.0",
+    "next-themes": "0.4.6",
+    "opencraft-skills": "1.2.0",
     "radix-ui": "1.6.7",
     "react": "19.2.8",
     "react-dom": "19.2.8",

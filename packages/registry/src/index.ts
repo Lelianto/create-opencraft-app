@@ -2,10 +2,11 @@ import { promises as fs, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
-import type { Architecture, OpenCraftConfig } from "@antihero/config";
+import { backendSchema, storageSchema, type Architecture, type OpenCraftConfig } from "@antihero/config";
 import { checksum, pathExists } from "@antihero/shared";
 
 const architectureEnum = z.enum(["atomic", "feature", "hybrid"]);
+const authEnum = z.enum(["none", "google"]);
 
 const fileEntrySchema = z.object({
   source: z.string(),
@@ -47,6 +48,22 @@ export interface RegistryModule {
   manifest: ModuleManifest;
   directory: string;
 }
+
+/**
+ * A named, validated combination of architecture + providers + modules that a
+ * generated project is built from. Kept in sync with `validateChoices` in the
+ * CLI: a preset is only useful if `create` can install it without error.
+ */
+export const presetSchema = z.object({
+  name: z.string().regex(/^[a-z0-9-]+$/),
+  description: z.string(),
+  architecture: architectureEnum,
+  backend: backendSchema,
+  auth: authEnum,
+  storage: storageSchema,
+  modules: z.array(z.string()),
+});
+export type Preset = z.infer<typeof presetSchema>;
 
 /**
  * `create`     — no file exists at the target yet.
@@ -149,6 +166,48 @@ export async function loadRegistry(
   }
 
   return result;
+}
+
+/**
+ * Load every preset bundled in `registry/presets/*.json`, sorted by name.
+ * A broken preset fails loudly so CI can catch it before it reaches users.
+ */
+export async function loadPresets(root: string = resolveRegistryRoot()): Promise<Preset[]> {
+  const presetsRoot = path.join(root, "presets");
+  if (!directoryExists(presetsRoot)) return [];
+
+  const presets: Preset[] = [];
+  for (const name of await fs.readdir(presetsRoot)) {
+    if (!name.endsWith(".json")) continue;
+
+    const file = path.join(presetsRoot, name);
+    let raw: unknown;
+    try {
+      raw = JSON.parse(await fs.readFile(file, "utf8"));
+    } catch (error) {
+      throw new Error(
+        `Invalid preset at ${file}: ${error instanceof Error ? error.message : "unreadable"}`,
+        { cause: error },
+      );
+    }
+
+    const parsed = presetSchema.safeParse(raw);
+    if (!parsed.success) {
+      throw new Error(`Invalid preset at ${file}: ${z.prettifyError(parsed.error)}`);
+    }
+    presets.push(parsed.data);
+  }
+
+  return presets.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/** Load a single preset by name, or `undefined` when it does not exist. */
+export async function loadPreset(
+  name: string,
+  root: string = resolveRegistryRoot(),
+): Promise<Preset | undefined> {
+  const presets = await loadPresets(root);
+  return presets.find((preset) => preset.name === name);
 }
 
 /**

@@ -14,11 +14,14 @@ import {
 } from "@antihero/config";
 import {
   applyFiles,
+  loadPreset as loadRegistryPreset,
+  loadPresets as loadRegistryPresets,
   loadRegistry,
   planInstall,
   resolveRegistryRoot,
   updateEnvExample,
   type InstallPlan,
+  type Preset,
 } from "@antihero/registry";
 import { detectPackageManager, packageCommand, pathExists } from "@antihero/shared";
 
@@ -80,6 +83,21 @@ function moduleNames(
   if (options.auth === "google") names.push("google-auth");
   if (options.storage !== "none") names.push(`storage-${options.storage}`);
   return [...new Set(names)];
+}
+
+/** List every preset bundled with the current installation. */
+export async function listPresets(): Promise<Preset[]> {
+  return loadRegistryPresets(path.join(findAssetRoot(), "registry"));
+}
+
+/** Load a preset by name; throws a friendly error when it does not exist. */
+export async function loadPreset(name: string): Promise<Preset> {
+  const preset = await loadRegistryPreset(name, path.join(findAssetRoot(), "registry"));
+  if (!preset) {
+    const available = (await listPresets()).map((item) => item.name).join(", ");
+    throw new Error(`Unknown preset: ${name}. Available presets: ${available || "none"}.`);
+  }
+  return preset;
 }
 
 export function validateChoices(

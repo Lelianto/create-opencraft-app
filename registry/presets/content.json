@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencraft.dev/schema/preset.schema.json",
+  "name": "content",
+  "description": "Content site: atomic design, no backend, Vercel Blob for media, paginated data table and confirmation dialogs.",
+  "architecture": "atomic",
+  "backend": "none",
+  "auth": "none",
+  "storage": "vercel-blob",
+  "modules": [
+    "error-handling",
+    "data-table",
+    "pagination",
+    "confirmation-dialog"
+  ]
+}

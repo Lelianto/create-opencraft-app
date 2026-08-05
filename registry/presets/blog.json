@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencraft.dev/schema/preset.schema.json",
+  "name": "blog",
+  "description": "Blog shell: atomic design, no backend or storage, security headers, SSRF protection, and error handling.",
+  "architecture": "atomic",
+  "backend": "none",
+  "auth": "none",
+  "storage": "none",
+  "modules": [
+    "error-handling",
+    "security-headers",
+    "ssrf-protection"
+  ]
+}

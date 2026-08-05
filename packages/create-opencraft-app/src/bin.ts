@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { Command } from "commander";
 import * as p from "@clack/prompts";
 import { z } from "zod";
-import { createProject, printPlan, type CreateOptions } from "@antihero/cli";
+import { createProject, listPresets, loadPreset, printPlan, type CreateOptions } from "@antihero/cli";
 import {
   architectureSchema,
   backendSchema,
@@ -17,6 +17,7 @@ import { detectPackageManager } from "@antihero/shared";
 const authSchema = z.enum(["none", "google"]);
 
 interface CreateFlags {
+  preset?: string;
   architecture?: string;
   backend?: string;
   auth?: string;
@@ -54,6 +55,7 @@ const program = new Command()
   .description("Create a new OpenCraft Next.js application")
   .version(readVersion())
   .argument("[project-name]")
+  .option("--preset <name>", "Use a validated preset combination (use 'list' to show all)")
   .option("--architecture <value>", "Component architecture (hybrid, feature, atomic)")
   .option("--backend <value>", "Backend provider (none, supabase, firebase)")
   .option("--auth <value>", "Authentication provider (none, google)")
@@ -83,6 +85,22 @@ function assertValidProjectName(value: string): string {
 
 program.action(async (projectNameArg: string | undefined, flags: CreateFlags) => {
   p.intro("OpenCraft");
+
+  if (flags.preset === "list") {
+    const presets = await listPresets();
+    if (!presets.length) {
+      p.log.error("No presets are bundled with this installation.");
+      process.exitCode = 1;
+      return;
+    }
+    for (const preset of presets) {
+      p.log.info(`${preset.name} — ${preset.description}`);
+    }
+    p.outro("Pass --preset <name> to create a project from one of these presets.");
+    return;
+  }
+
+  const preset = flags.preset ? await loadPreset(flags.preset) : undefined;
 
   const ask = async <T>(value: T | undefined, promptFn: () => Promise<T | symbol>): Promise<T> => {
     if (value !== undefined) return value;
@@ -118,51 +136,57 @@ program.action(async (projectNameArg: string | undefined, flags: CreateFlags) =>
   );
   const packageManager = packageManagerSchema.parse(pmInput);
 
-  const archInput = await ask<string>(flags.architecture, () =>
-    p.select({
+  const archInput = await ask<string>(flags.architecture, async () => {
+    if (preset) return preset.architecture;
+    return p.select({
       message: "Component architecture?",
       options: [
         { value: "hybrid", label: "Hybrid" },
         { value: "feature", label: "Feature-based" },
         { value: "atomic", label: "Atomic Design" },
       ],
-    }),
-  );
+    });
+  });
   const architecture = architectureSchema.parse(archInput);
 
-  const backendInput = await ask<string>(flags.backend, () =>
-    p.select({
+  const backendInput = await ask<string>(flags.backend, async () => {
+    if (preset) return preset.backend;
+    return p.select({
       message: "Backend?",
       options: ["none", "supabase", "firebase"].map((val) => ({ value: val, label: val })),
-    }),
-  );
+    });
+  });
   const backend = backendSchema.parse(backendInput);
 
-  const authInput = await ask<string>(flags.auth, () =>
-    p.select({
+  const authInput = await ask<string>(flags.auth, async () => {
+    if (preset) return preset.auth;
+    return p.select({
       message: "Authentication?",
       options: [
         { value: "none", label: "None" },
         { value: "google", label: "Google" },
       ],
-    }),
-  );
+    });
+  });
   const auth = authSchema.parse(authInput);
 
-  const storageInput = await ask<string>(flags.storage, () =>
-    p.select({
+  const storageInput = await ask<string>(flags.storage, async () => {
+    if (preset) return preset.storage;
+    return p.select({
       message: "Storage?",
       options: ["none", "vercel-blob", "supabase", "firebase"].map((val) => ({
         value: val,
         label: val,
       })),
-    }),
-  );
+    });
+  });
   const storage = storageSchema.parse(storageInput);
 
   let modules: string[];
   if (flags.modules) {
     modules = String(flags.modules).split(",").filter(Boolean);
+  } else if (preset) {
+    modules = preset.modules;
   } else if (flags.yes) {
     modules = [];
   } else {
