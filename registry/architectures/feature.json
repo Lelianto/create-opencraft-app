@@ -1,1 +1,11 @@
-{"directories":["src/app","src/components/ui","src/features","src/infrastructure","src/config","src/lib","src/types"]}
+{
+  "directories": [
+    "src/app",
+    "src/components/ui",
+    "src/features",
+    "src/infrastructure",
+    "src/config",
+    "src/lib",
+    "src/types"
+  ]
+}

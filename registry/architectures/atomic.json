@@ -1,1 +1,15 @@
-{"directories":["src/app","src/components/ui","src/components/atoms","src/components/molecules","src/components/organisms","src/components/templates","src/components/layouts","src/infrastructure","src/config","src/lib","src/types"]}
+{
+  "directories": [
+    "src/app",
+    "src/components/ui",
+    "src/components/atoms",
+    "src/components/molecules",
+    "src/components/organisms",
+    "src/components/templates",
+    "src/components/layouts",
+    "src/infrastructure",
+    "src/config",
+    "src/lib",
+    "src/types"
+  ]
+}
