@@ -63,6 +63,26 @@ jobs:
             auth: google
             storage: firebase
             modules: image-upload,dashboard
+          - label: atomic
+            architecture: atomic
+            backend: none
+            auth: none
+            storage: none
+            modules: dashboard,data-table
+          - label: feature-firebase
+            architecture: feature
+            backend: firebase
+            auth: google
+            storage: firebase
+            modules: crud-example,image-upload
+          - label: supabase-storage
+            architecture: hybrid
+            backend: supabase
+            auth: google
+            storage: supabase
+            modules: file-upload,user-profile
+          - label: preset-saas
+            preset: saas
 
     steps:
       - name: Checkout Repository
@@ -97,15 +117,23 @@ jobs:
         # Run from the temp directory and pass a bare name, so the project name
         # stays a valid npm package name rather than an absolute path.
         working-directory: ${{ runner.temp }}
+        shell: bash
         run: |
-          node "$GITHUB_WORKSPACE/packages/create-opencraft-app/dist/src/bin.js" \
-            "sample-${{ matrix.label }}" \
-            --architecture ${{ matrix.architecture }} \
-            --backend ${{ matrix.backend }} \
-            --auth ${{ matrix.auth }} \
-            --storage ${{ matrix.storage }} \
-            --modules ${{ matrix.modules }} \
-            --package-manager pnpm --yes --no-install --no-git
+          if [[ -n "${{ matrix.preset }}" ]]; then
+            node "$GITHUB_WORKSPACE/packages/create-opencraft-app/dist/src/bin.js" \
+              "sample-${{ matrix.label }}" \
+              --preset ${{ matrix.preset }} \
+              --package-manager pnpm --yes --no-install --no-git
+          else
+            node "$GITHUB_WORKSPACE/packages/create-opencraft-app/dist/src/bin.js" \
+              "sample-${{ matrix.label }}" \
+              --architecture ${{ matrix.architecture }} \
+              --backend ${{ matrix.backend }} \
+              --auth ${{ matrix.auth }} \
+              --storage ${{ matrix.storage }} \
+              --modules ${{ matrix.modules }} \
+              --package-manager pnpm --yes --no-install --no-git
+          fi
 
       - name: Install generated app dependencies
         working-directory: ${{ runner.temp }}/sample-${{ matrix.label }}

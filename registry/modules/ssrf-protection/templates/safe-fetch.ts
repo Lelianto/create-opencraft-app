@@ -201,7 +201,7 @@ export async function safeFetch(
       cache: "no-store",
       headers: { accept: "application/json, text/plain;q=0.8", ...headers },
       ...(body === undefined ? {} : { body }),
-    });
+    } as RequestInit & { cache: "no-store" });
 
     if (response.status >= 300 && response.status < 400) {
       const location = response.headers.get("location");

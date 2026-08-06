@@ -7,7 +7,7 @@ import type {
   ProductListQuery,
   ProductPage,
   ProductUpdate,
-} from "./schema";
+} from "./schema.js";
 
 /**
  * Supabase-backed persistence for Product.

@@ -15,7 +15,8 @@
     "paths": {
       "server-only": ["./test/stubs/server-only.ts"],
       "@/infrastructure/auth": ["./test/stubs/auth.ts"],
-      "@/lib/errors": ["../../registry/modules/error-handling/templates/errors.ts"]
+      "@/lib/errors": ["../../registry/modules/error-handling/templates/errors.ts"],
+      "zod": ["../../node_modules/.pnpm/zod@4.1.5/node_modules/zod/index.d.ts"]
     }
   },
   "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"]

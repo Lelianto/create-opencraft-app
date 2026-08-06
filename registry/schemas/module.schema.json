@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opencraft.dev/schemas/module.schema.json",
+  "title": "OpenCraft module manifest",
+  "description": "JSON Schema for a module manifest. Kept in sync with manifestSchema in @antihero/registry (the Zod schema is the source of truth).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "version",
+    "description",
+    "supportedArchitectures",
+    "files"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Unique module name, kebab-case."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[0-9A-Za-z.-]+)?$",
+      "description": "Semver version of the module."
+    },
+    "description": {
+      "type": "string",
+      "description": "One-line summary of what the module provides."
+    },
+    "supportedArchitectures": {
+      "type": "array",
+      "items": { "enum": ["atomic", "feature", "hybrid"] },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "supportedBackends": {
+      "type": "array",
+      "items": { "enum": ["none", "supabase", "firebase"] },
+      "uniqueItems": true,
+      "description": "Optional. When present, limits which backends may install this module."
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+      "default": []
+    },
+    "npmDependencies": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "default": {}
+    },
+    "npmDevDependencies": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "default": {}
+    },
+    "environmentVariables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "description"],
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "required": { "type": "boolean", "default": true }
+        }
+      },
+      "default": []
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Template files keyed by architecture.",
+      "properties": {
+        "atomic": { "$ref": "#/$defs/fileEntryList" },
+        "feature": { "$ref": "#/$defs/fileEntryList" },
+        "hybrid": { "$ref": "#/$defs/fileEntryList" }
+      }
+    },
+    "instructions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    }
+  },
+  "$defs": {
+    "fileEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "target"],
+      "properties": {
+        "source": { "type": "string" },
+        "target": { "type": "string" },
+        "when": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "backend": {
+              "type": "array",
+              "items": { "enum": ["none", "supabase", "firebase"] }
+            },
+            "storage": {
+              "type": "array",
+              "items": { "enum": ["none", "supabase", "firebase", "vercel-blob"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

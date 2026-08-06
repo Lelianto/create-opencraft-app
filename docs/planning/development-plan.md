@@ -378,15 +378,16 @@ Riset package sejenis (2026) menghasilkan pola yang layak diadopsi:
 ## 10. Product Roadmap (Fase 1–4)
 
 ### Fase 1 (stabilkan fondasi + starter jadi produk) — sekarang → 2 sprint
-- [ ] A1 App shell + ThemeProvider + dark toggle di `nextjs-base`
-- [ ] A2 Landing page diperkaya
+- [x] A1 App shell + ThemeProvider + dark toggle di `nextjs-base`
+- [x] A2 Landing page diperkaya
 - [ ] A3 Auth berfungsi di starter (login/logout + protected)
 - [ ] A4 Dashboard jadi shell fungsional
-- [ ] B1 Format preset + `create --preset` + `--preset list`
+- [x] B1 Format preset + `create --preset` + `--preset list`
 - [ ] B4 `AGENTS.md` diperkuat (kontrak AI)
-- [ ] C1 Perluas matrix CI (atomic, feature, backend-less, storage-supabase)
-- [ ] C2 Test behavioural safeFetch, rate-limit, crud repository, storage, auth
-- [ ] C5 `registry/schemas/module.schema.json`
+- [x] C1 Perluas matrix CI (atomic, feature, backend-less, storage-supabase)
+- [x] C2 Test behavioural safeFetch, rate-limit, crud repository, storage, auth
+- [x] C4 Validator provider rules (products.sql + firestore.rules)
+- [x] C5 `registry/schemas/module.schema.json`
 - [ ] A6 Bersihkan file-uploader/image-upload + warna hardcode
 
 ### Fase 2 (integrasi & deployment) — 2–4 sprint
