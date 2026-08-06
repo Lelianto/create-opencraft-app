@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencraft.dev/schema/preset.schema.json",
+  "name": "portfolio",
+  "description": "Personal or business site: atomic design, no backend or auth, security headers, SSRF protection, and error handling.",
+  "architecture": "atomic",
+  "backend": "none",
+  "auth": "none",
+  "storage": "none",
+  "modules": [
+    "error-handling",
+    "security-headers",
+    "ssrf-protection"
+  ]
+}

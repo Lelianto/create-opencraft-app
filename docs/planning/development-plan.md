@@ -51,6 +51,12 @@ Kombinasi modul + config yang langsung menghasilkan produk yang bisa di-deploy:
 | Preset | Arsitektur | Backend | Auth | Storage | Modul wajib | Hasil |
 |---|---|---|---|---|---|---|
 | `saas` | hybrid | supabase | google | supabase | auth, protected-routes, role-permission, user-profile, dashboard, crud-example, data-table, pagination, search-filter, audit-log, error-handling, rate-limit, ssrf-protection, security-headers, api-response, input-validation, confirmation-dialog | App dengan login, dashboard, manajemen user/role, contoh CRUD, audit |
+| `firebase-saas` | hybrid | firebase | google | firebase | sama dengan `saas` | SaaS parity di Firebase |
+| `admin-tool` | hybrid | supabase | google | supabase | auth, protected-routes, role-permission, user-profile, dashboard, data-table, pagination, search-filter, audit-log, api-response | Backoffice/konsol admin internal |
+| `app-mobile-api` | feature | firebase | google | firebase | auth, protected-routes, api-response, crud-example, image-upload, storage | Backend API + web admin untuk mobile app |
+| `content` | atomic | none | none | vercel-blob | error-handling, data-table, pagination, confirmation-dialog | Landing + dashboard statis |
+| `blog` | atomic | none | none | none | error-handling, security-headers, ssrf-protection | Landing + blog shell |
+| `portfolio` | atomic | none | none | none | error-handling, security-headers, ssrf-protection | Landing site personal/bisnis |
 | `content` | atomic | none | none | vercel-blob | error-handling, data-table, pagination, confirmation-dialog | Landing + dashboard statis |
 | `app-mobile-api` | feature | firebase | google | firebase | auth, protected-routes, api-response, crud-example, image-upload, storage | Backend API + web admin untuk mobile app |
 | `blog` | atomic | none | none | none | error-handling, security-headers, ssrf-protection | Landing + blog shell |
@@ -230,7 +236,7 @@ storage + config yang tervalidasi dan langsung di-deploy.
 - CLI: `opencraft create --preset saas` + `--preset list`.
 
 **B2. Preset awal (P1)** — sesuai tabel di Bagian 1.3: `saas`, `content`, `app-mobile-api`,
-`blog`.
+`blog`, `firebase-saas`, `admin-tool`, `portfolio`.
 
 **B3. Preset sebagai "produk jadi" yang diuji (P0)**
 - Setiap preset menjadi kombinasi di matrix CI `generated-apps` (Bagian 7.1), jadi

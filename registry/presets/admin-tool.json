@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencraft.dev/schema/preset.schema.json",
+  "name": "admin-tool",
+  "description": "Internal backoffice: Google auth, user profiles with roles, audit-logged admin data tables, search and pagination on Supabase.",
+  "architecture": "hybrid",
+  "backend": "supabase",
+  "auth": "google",
+  "storage": "supabase",
+  "modules": [
+    "auth-pages",
+    "protected-routes",
+    "role-permission",
+    "user-profile",
+    "dashboard",
+    "data-table",
+    "pagination",
+    "search-filter",
+    "audit-log",
+    "error-handling",
+    "rate-limit",
+    "ssrf-protection",
+    "security-headers",
+    "api-response",
+    "input-validation",
+    "confirmation-dialog"
+  ]
+}

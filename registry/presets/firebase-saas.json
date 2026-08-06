@@ -1,0 +1,28 @@
+{
+  "$schema": "https://opencraft.dev/schema/preset.schema.json",
+  "name": "firebase-saas",
+  "description": "Full SaaS app on Firebase: Google auth, dashboard, roles, user profiles, audited CRUD with search, pagination, rate limiting, and security hardening.",
+  "architecture": "hybrid",
+  "backend": "firebase",
+  "auth": "google",
+  "storage": "firebase",
+  "modules": [
+    "auth-pages",
+    "protected-routes",
+    "role-permission",
+    "user-profile",
+    "dashboard",
+    "crud-example",
+    "data-table",
+    "pagination",
+    "search-filter",
+    "audit-log",
+    "error-handling",
+    "rate-limit",
+    "ssrf-protection",
+    "security-headers",
+    "api-response",
+    "input-validation",
+    "confirmation-dialog"
+  ]
+}

@@ -76,6 +76,18 @@ npx create-opencraft-app --preset list
 Presets are validated combinations (architecture + backend + auth + storage + modules) that are
 built and tested in CI, so a preset project is deployable from the first run.
 
+Available presets:
+
+| Preset | Architecture | Backend | Auth | Storage | Purpose |
+|---|---|---|---|---|---|
+| `saas` | hybrid | supabase | google | supabase | Full SaaS app |
+| `firebase-saas` | hybrid | firebase | google | firebase | Same SaaS on Firebase |
+| `admin-tool` | hybrid | supabase | google | supabase | Internal backoffice |
+| `app-mobile-api` | feature | firebase | google | firebase | Mobile app backend + web admin |
+| `content` | atomic | none | none | vercel-blob | Content site |
+| `blog` | atomic | none | none | none | Blog shell |
+| `portfolio` | atomic | none | none | none | Personal / business site |
+
 ### Authentication
 
 If an auth provider is installed, this project ships a working sign-in loop:
