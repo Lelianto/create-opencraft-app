@@ -1,0 +1,77 @@
+{
+  "name": "auth-pages",
+  "version": "1.0.0",
+  "description": "Working sign-in page and sign-out button for the installed auth provider",
+  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedBackends": ["supabase", "firebase"],
+  "dependencies": ["google-auth"],
+  "npmDependencies": {},
+  "npmDevDependencies": {},
+  "environmentVariables": [],
+  "files": {
+    "atomic": [
+      {
+        "source": "templates/page.tsx",
+        "target": "src/app/auth/signin/page.tsx"
+      },
+      {
+        "source": "templates/sign-out-button.supabase.tsx",
+        "target": "{{dir.domain}}/authentication/components/sign-out-button.tsx",
+        "when": {
+          "backend": ["supabase"]
+        }
+      },
+      {
+        "source": "templates/sign-out-button.firebase.tsx",
+        "target": "{{dir.domain}}/authentication/components/sign-out-button.tsx",
+        "when": {
+          "backend": ["firebase"]
+        }
+      }
+    ],
+    "feature": [
+      {
+        "source": "templates/page.tsx",
+        "target": "src/app/auth/signin/page.tsx"
+      },
+      {
+        "source": "templates/sign-out-button.supabase.tsx",
+        "target": "{{dir.domain}}/authentication/components/sign-out-button.tsx",
+        "when": {
+          "backend": ["supabase"]
+        }
+      },
+      {
+        "source": "templates/sign-out-button.firebase.tsx",
+        "target": "{{dir.domain}}/authentication/components/sign-out-button.tsx",
+        "when": {
+          "backend": ["firebase"]
+        }
+      }
+    ],
+    "hybrid": [
+      {
+        "source": "templates/page.tsx",
+        "target": "src/app/auth/signin/page.tsx"
+      },
+      {
+        "source": "templates/sign-out-button.supabase.tsx",
+        "target": "{{dir.domain}}/authentication/components/sign-out-button.tsx",
+        "when": {
+          "backend": ["supabase"]
+        }
+      },
+      {
+        "source": "templates/sign-out-button.firebase.tsx",
+        "target": "{{dir.domain}}/authentication/components/sign-out-button.tsx",
+        "when": {
+          "backend": ["firebase"]
+        }
+      }
+    ]
+  },
+  "instructions": [
+    "Sign-in page uses the server-verified getCurrentUser() and renders the provider's GoogleSignIn button.",
+    "Wire the exported SignOutButton from @/features/authentication/components (or @/lib/..., in atomic) into the app header or profile page."
+  ]
+}
