@@ -37,5 +37,18 @@
   },
   "instructions": [
     "Requires an installed auth module exporting requireUser from @/infrastructure/auth. Profile data always comes from the server-verified session."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "ProfilePage",
+      "path": "src/app/profile/page.tsx",
+      "description": "Authenticated profile page"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "standard",
+    "lifecycle": "stable",
+    "reviewCadence": "yearly"
+  }
 }

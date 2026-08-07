@@ -10,6 +10,9 @@ const modulesRoot = path.join(root, "registry/modules");
 
 const architectures = ["atomic", "feature", "hybrid"];
 const namePattern = /^[a-z0-9-]+$/;
+const lifecycleValues = ["stable", "beta", "experimental", "deprecated"];
+const classificationValues = ["core", "standard", "security", "domain"];
+const ownerPattern = /^[a-z0-9][a-z0-9._-]*$/i;
 
 function fail(module, message) {
   console.error(`✗ ${module}: ${message}`);
@@ -47,6 +50,50 @@ for (const name of readdirSync(modulesRoot)) {
   }
   if (typeof manifest.files !== "object" || manifest.files === null) issues.push("missing files");
 
+  // `exports` — the machine-readable public API contract that `opencraft info`
+  // and `list --json` surface to AI agents. Every export must name a file that
+  // the module actually installs, and that file must be reachable.
+  if (manifest.exports !== undefined) {
+    if (!Array.isArray(manifest.exports)) issues.push("exports must be an array");
+    else {
+      const installedTargets = new Set(
+        Object.values(manifest.files ?? {})
+          .flat()
+          .map((entry) => entry.target),
+      );
+      for (const entry of manifest.exports) {
+        if (typeof entry.name !== "string" || !entry.name) issues.push("export missing name");
+        if (typeof entry.path !== "string" || !entry.path) issues.push(`export "${entry.name}" missing path`);
+        else if (!installedTargets.has(entry.path)) {
+          issues.push(
+            `export "${entry.name}" points to "${entry.path}", which is not a file this module installs`,
+          );
+        }
+      }
+    }
+  }
+
+  // `governance` — provenance + lifecycle metadata so every module answers who
+  // owns it, why it exists, and how it is governed (LCDD principle 2).
+  if (manifest.governance !== undefined) {
+    const governance = manifest.governance;
+    if (typeof governance !== "object" || governance === null) issues.push("governance must be an object");
+    else {
+      if (typeof governance.owner !== "string" || !ownerPattern.test(governance.owner)) {
+        issues.push("governance.owner must be a non-empty owner name");
+      }
+      if (!lifecycleValues.includes(governance.lifecycle)) {
+        issues.push(`governance.lifecycle must be one of ${lifecycleValues.join(", ")}`);
+      }
+      if (typeof governance.classification !== "string") {
+        issues.push("governance.classification must be a string");
+      } else if (!classificationValues.includes(governance.classification)) {
+        issues.push(`governance.classification must be one of ${classificationValues.join(", ")}`);
+      }
+    }
+  }
+
+
   for (const architecture of architectures) {
     const entries = manifest.files?.[architecture] ?? [];
     if (!Array.isArray(entries)) {
@@ -69,8 +116,21 @@ for (const name of readdirSync(modulesRoot)) {
           "firestore.rules",
           "storage.rules",
           "firebase.json",
+          "Dockerfile",
+          ".dockerignore",
+          "compose.yaml",
+          "docker-compose.yml",
+          "vercel.json",
+          "docker-compose.yaml",
         ]);
-        const allowedPrefixes = ["src/", "supabase/", "drizzle/", "prisma/"];
+        const allowedPrefixes = [
+          "src/",
+          "supabase/",
+          "drizzle/",
+          "prisma/",
+          ".github/workflows/",
+          "docs/",
+        ];
 
         const isAllowed =
           hasPlaceholder ||

@@ -33,5 +33,18 @@
   },
   "instructions": [
     "The page number comes from the URL but must be clamped and validated server-side before it reaches a query."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "Pagination",
+      "path": "{{aliases.components}}/molecules/pagination.tsx",
+      "description": "URL-driven pagination"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "standard",
+    "lifecycle": "stable",
+    "reviewCadence": "yearly"
+  }
 }

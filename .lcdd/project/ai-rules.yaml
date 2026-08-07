@@ -1,0 +1,134 @@
+kind: ai-rules
+pack: node-pack
+version: 1
+description: AI coding rules for Node.js work.
+updated_at: 2026-01-01
+rules:
+  - id: ai-ts-strict
+    level: must
+    instruction: Keep tsconfig strict mode enabled; never relax it to silence a type error.
+    rationale: Relaxing strictness reintroduces the failures strict mode prevents.
+  - id: ai-ts-unknown
+    level: must-not
+    instruction: "Do not write explicit `any` types, even to make a compile pass."
+    rationale: "`any` disables the type system for the entire reachable surface."
+  - id: ai-ts-import-type
+    level: should
+    instruction: "Prefer `import type` for type-only imports."
+    rationale: Produces smaller bundles and clearer intent.
+  - id: ai-ts-run-checks
+    level: must
+    instruction: Run the type-check and lint commands and fix all reported errors before finishing.
+    rationale: Completion claims require fresh command output per the evidence standard.
+  - id: ai-react-functional
+    level: must
+    instruction: Write new components as function components using hooks.
+    rationale: Matches the current supported React model.
+  - id: ai-react-hooks
+    level: must
+    instruction: "Follow the Rules of Hooks: top-level calls, complete dependency arrays."
+    rationale: Violations cause stale closures that are hard to detect.
+  - id: ai-react-keys
+    level: should
+    instruction: "Use stable identity keys for list items, never bare indexes for reorderable lists."
+    rationale: Index keys corrupt state reuse and accessibility.
+  - id: ai-react-a11y
+    level: must
+    instruction: "Include accessible labels, focus handling, and keyboard operability in every interactive component."
+    rationale: "Accessibility is a delivery input, not final polish."
+  - id: ai-react-no-generated-ui
+    level: must-not
+    instruction: "Do not generate decorative, interchangeable layouts; ground visual decisions in product meaning."
+    rationale: OpenCraft rejects generic AI-generated design.
+  - id: ai-core-evidence
+    level: must
+    instruction: "Back every completion claim with fresh command output; record unexecuted checks as \"not run\"."
+    rationale: "Completion, release readiness, and production health are separate, verifiable claims."
+  - id: ai-core-secrets
+    level: must-not
+    instruction: "Never write secrets, credentials, or private operational details into code, config, logs, fixtures, or examples."
+    rationale: Exposed secrets are a supply-chain and incident risk.
+  - id: ai-core-authority
+    level: must
+    instruction: "Never execute production, destructive, purchasing, or external actions without explicit human authority."
+    rationale: Preparation is allowed; execution against production is not.
+  - id: ai-core-honest
+    level: must-not
+    instruction: "Do not invent metrics, testimonials, social proof, or unsupported success claims; reject generic AI-generated design without product evidence."
+    rationale: Originality and truthfulness come from domain meaning and user behavior.
+  - id: ai-core-lcdd
+    level: must
+    instruction: Read .lcdd/CONTEXT.md and obey the active contexts and conventions materialized there.
+    rationale: "Living context is the enforced, current source of project knowledge."
+  - id: ai-next-router
+    level: must
+    instruction: Use the App Router for all new routes; never extend pages/.
+    rationale: One router keeps caching and data-fetching semantics consistent.
+  - id: ai-next-server-first
+    level: must
+    instruction: "Fetch in Server Components by default; mark client components explicitly with 'use client'."
+    rationale: Server-first rendering is the Next.js performance and correctness model.
+  - id: ai-next-mutations
+    level: must
+    instruction: Route durable mutations through Server Actions or route handlers with server-side validation and authorization.
+    rationale: Client-only mutations bypass enforcement and audit.
+  - id: ai-next-revalidate
+    level: must
+    instruction: Revalidate affected routes after every mutation with revalidatePath or revalidateTag.
+    rationale: Stale caches after writes violate the living-context promise.
+  - id: ai-next-secrets
+    level: must-not
+    instruction: Do not expose secrets to the client; keep server-only code behind the server-only boundary.
+    rationale: Server components can leak to the client bundle if misused.
+  - id: ai-sec-validate
+    level: must
+    instruction: Validate and normalize all untrusted input at the server boundary before use.
+    rationale: Injection and logic flaws begin with unvalidated input.
+  - id: ai-sec-authz
+    level: must
+    instruction: Re-check authorization server-side on every protected operation; never trust client claims.
+    rationale: Client-side gates are not authorization.
+  - id: ai-sec-secrets
+    level: must-not
+    instruction: "Never write, copy, or generate secrets into code, config, logs, fixtures, or examples."
+    rationale: Exposed secrets are a supply-chain and incident risk.
+  - id: ai-sec-encoding
+    level: must
+    instruction: "Encode output for its context; never concatenate unsanitized user input into HTML, SQL, or URLs."
+    rationale: Output encoding is the injection defense that cannot be omitted.
+  - id: ai-sec-threat
+    level: should
+    instruction: "When adding a feature that touches data or boundaries, note the threat model implications and new trust boundaries."
+    rationale: "Security is a delivery input, not final polish."
+  - id: ai-test-proportional
+    level: should
+    instruction: Write tests proportional to the risk of the change; cover high-risk paths with integration or E2E evidence.
+    rationale: Weak coverage is not verification.
+  - id: ai-test-no-weak
+    level: must-not
+    instruction: "Never weaken a failing test, remove assertions, or skip tests to make a suite pass."
+    rationale: Drifting the test to match broken code is specification drift.
+  - id: ai-test-run
+    level: must
+    instruction: Run the focused test suite and report fresh output before claiming completion.
+    rationale: Completion claims require fresh command output.
+  - id: ai-test-regression
+    level: must
+    instruction: Add a regression test that fails on the old behavior before fixing a bug.
+    rationale: Regressions are only proven by a test that reproduces the failure.
+  - id: ai-node-lts
+    level: must
+    instruction: Assume the Node LTS version declared in engines; never rely on non-LTS-only APIs.
+    rationale: Runtime version drift between environments causes production surprises.
+  - id: ai-node-esm
+    level: should
+    instruction: Write new modules as ESM.
+    rationale: Predictable static analysis and bundling.
+  - id: ai-node-handle-errors
+    level: must
+    instruction: Handle rejected promises and stream errors; never leave unhandled rejections.
+    rationale: Unhandled rejections crash Node processes in modern runtimes.
+  - id: ai-node-no-secrets
+    level: must-not
+    instruction: "Do not embed secrets, connection strings, or private operational details in code or config."
+    rationale: Secrets in source are a supply-chain and exposure risk.

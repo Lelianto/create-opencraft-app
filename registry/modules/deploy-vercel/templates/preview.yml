@@ -1,0 +1,23 @@
+name: Deploy preview to Vercel
+on:
+  pull_request:
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run type-check
+      - run: pnpm run lint
+      - run: pnpm run test
+      - run: pnpm run build

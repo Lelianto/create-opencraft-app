@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
-    "postinstall": "opencraft-skills install --target all"
+    "postinstall": "opencraft-skills install --target all --with-project-files"
   },
   "dependencies": {
     "@hookform/resolvers": "5.7.1",
@@ -22,7 +22,7 @@
     "lucide-react": "1.28.0",
     "next": "16.3.0",
     "next-themes": "0.4.6",
-    "opencraft-skills": "1.2.0",
+    "opencraft-skills": "1.3.0",
     "radix-ui": "1.6.7",
     "react": "19.2.8",
     "react-dom": "19.2.8",

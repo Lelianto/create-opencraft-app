@@ -2,9 +2,17 @@
   "name": "auth-firebase",
   "version": "1.0.0",
   "description": "Server-verified Firebase authentication",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
-  "supportedBackends": ["firebase"],
-  "dependencies": ["error-handling"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
+  "supportedBackends": [
+    "firebase"
+  ],
+  "dependencies": [
+    "error-handling"
+  ],
   "npmDependencies": {
     "firebase": "12.17.0",
     "firebase-admin": "14.2.0"
@@ -66,5 +74,33 @@
   },
   "instructions": [
     "Store the Firebase private key only in server-side environment variables and deploy restrictive Security Rules."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "getCurrentUser",
+      "path": "{{aliases.infrastructure}}/auth.ts",
+      "description": "Server-side session lookup"
+    },
+    {
+      "name": "requireUser",
+      "path": "{{aliases.infrastructure}}/auth.ts",
+      "description": "Server-side session enforcement"
+    },
+    {
+      "name": "POST",
+      "path": "src/app/api/auth/session/route.ts",
+      "description": "Create session route"
+    },
+    {
+      "name": "DELETE",
+      "path": "src/app/api/auth/session/route.ts",
+      "description": "Destroy session route"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "core",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }

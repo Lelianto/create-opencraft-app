@@ -1,0 +1,68 @@
+{
+  "name": "deploy-vercel",
+  "version": "1.0.0",
+  "description": "Vercel deployment: vercel.json (framework + regions) and a PR preview workflow that verifies and builds before merge",
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
+  "dependencies": [],
+  "npmDependencies": {},
+  "npmDevDependencies": {},
+  "environmentVariables": [],
+  "files": {
+    "atomic": [
+      {
+        "source": "templates/vercel.json",
+        "target": "vercel.json"
+      },
+      {
+        "source": "templates/preview.yml",
+        "target": ".github/workflows/vercel-preview.yml"
+      }
+    ],
+    "feature": [
+      {
+        "source": "templates/vercel.json",
+        "target": "vercel.json"
+      },
+      {
+        "source": "templates/preview.yml",
+        "target": ".github/workflows/vercel-preview.yml"
+      }
+    ],
+    "hybrid": [
+      {
+        "source": "templates/vercel.json",
+        "target": "vercel.json"
+      },
+      {
+        "source": "templates/preview.yml",
+        "target": ".github/workflows/vercel-preview.yml"
+      }
+    ]
+  },
+  "exports": [
+    {
+      "name": "vercelConfig",
+      "path": "vercel.json",
+      "description": "Vercel framework, build/install command, regions"
+    },
+    {
+      "name": "previewWorkflow",
+      "path": ".github/workflows/vercel-preview.yml",
+      "description": "PR preview: type-check, lint, test, build"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "standard",
+    "lifecycle": "beta",
+    "reviewCadence": "quarterly"
+  },
+  "instructions": [
+    "Link the project with `vercel link` and set the provider environment variables in the Vercel dashboard (or `vercel env add`). They are read at build/runtime exactly like `.env.local`.",
+    "Production deploys are deliberately not automated by this module: run `vercel --prod` or set up a production deployment in the dashboard when you are ready to ship."
+  ]
+}

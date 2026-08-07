@@ -35,6 +35,7 @@ npx create-opencraft-app my-app \
 
 | Option | Values | Description |
 | --- | --- | --- |
+| `--preset` | `saas`, `firebase-saas`, `admin-tool`, `app-mobile-api`, `content`, `blog`, `portfolio`, `self-hosted`, `list` | Start from a validated product preset instead of hand-picking modules (`--preset list` shows all) |
 | `--architecture` | `hybrid`, `feature`, `atomic` | Choose component architecture layout |
 | `--backend` | `none`, `supabase`, `firebase` | Select backend provider |
 | `--auth` | `none`, `google` | Enable Google OAuth authentication |

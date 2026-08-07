@@ -81,5 +81,18 @@
   },
   "instructions": [
     "Validate post-login redirect paths against an internal allowlist; never accept arbitrary redirect URLs."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "GoogleSignIn",
+      "path": "{{dir.domain}}/authentication/components/google-sign-in.tsx",
+      "description": "Google OAuth sign-in button"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "core",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }

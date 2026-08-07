@@ -40,5 +40,38 @@
   "instructions": [
     "Populate the role on AppUser from provider metadata: Supabase auth.users raw_app_meta_data.role or Firebase custom claims. Never trust a client-supplied role.",
     "Requires an installed auth module that exports AppUser from @/infrastructure/auth."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "getRole",
+      "path": "{{aliases.lib}}/roles.ts",
+      "description": "Resolve role from user"
+    },
+    {
+      "name": "hasRole",
+      "path": "{{aliases.lib}}/roles.ts",
+      "description": "Role check"
+    },
+    {
+      "name": "isAdmin",
+      "path": "{{aliases.lib}}/roles.ts",
+      "description": "Admin check"
+    },
+    {
+      "name": "requireRole",
+      "path": "{{aliases.lib}}/roles.ts",
+      "description": "Role enforcement"
+    },
+    {
+      "name": "requireOwnerOrAdmin",
+      "path": "{{aliases.lib}}/roles.ts",
+      "description": "Ownership or admin enforcement"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft-security",
+    "classification": "security",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }

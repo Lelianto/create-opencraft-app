@@ -7,8 +7,18 @@ import { Command } from "commander";
 import * as p from "@clack/prompts";
 import { createTwoFilesPatch } from "diff";
 import { addModules, doctor, initProject, printPlan } from "./index.js";
-import { filesForArchitecture, loadRegistry, planInstall } from "@antihero/registry";
-import { architectureSchema, readConfig, writeConfigAtomic } from "@antihero/config";
+import {
+  filesForArchitecture,
+  loadRegistry,
+  planInstall,
+  replacePlaceholders,
+} from "@antihero/registry";
+import {
+  architectureSchema,
+  readConfig,
+  writeConfigAtomic,
+  type OpenCraftConfig,
+} from "@antihero/config";
 import { checksum, pathExists } from "@antihero/shared";
 
 interface InitOptions {
@@ -137,7 +147,8 @@ program
 program
   .command("list")
   .description("List all available registry modules and their installation status")
-  .action(async () => {
+  .option("--json", "Emit machine-readable JSON (for AI agents)")
+  .action(async (options: { json?: boolean }) => {
     const config = await requireConfig(process.cwd());
     const registry = await loadRegistry();
 
@@ -164,6 +175,35 @@ program
           status: installed.version === registryVersion ? "up to date" : "update available",
         };
       });
+
+    if (options.json) {
+      const detail = [...registry.values()]
+        .sort((a, b) => a.manifest.name.localeCompare(b.manifest.name))
+        .map((item) => {
+          const installed = config.modules[item.manifest.name];
+          return {
+            name: item.manifest.name,
+            version: item.manifest.version,
+            description: item.manifest.description,
+            status: installed
+              ? installed.version === item.manifest.version
+                ? "installed"
+                : "update available"
+              : "available",
+            architecture: item.manifest.supportedArchitectures,
+            backends: item.manifest.supportedBackends ?? ["any"],
+            dependencies: item.manifest.dependencies,
+            lifecycle: item.manifest.governance.lifecycle,
+            exports: item.manifest.exports.map((entry) => ({
+              name: entry.name,
+              path: replacePlaceholders(entry.path, config),
+              description: entry.description ?? "",
+            })),
+          };
+        });
+      console.log(JSON.stringify(detail, null, 2));
+      return;
+    }
 
     const width = Math.max(...rows.map((row) => row.name.length), 4);
     console.log(`  ${"MODULE".padEnd(width)}  LOCAL     REGISTRY  STATUS`);
@@ -196,6 +236,32 @@ program
     console.log(
       `Npm dev deps:     ${Object.keys(manifest.npmDevDependencies).join(", ") || "none"}`,
     );
+    console.log(
+      `Governance:       ${manifest.governance.owner} · ${manifest.governance.classification} · ${manifest.governance.lifecycle}${manifest.governance.reviewCadence ? ` · review ${manifest.governance.reviewCadence}` : ""}`,
+    );
+
+    // Show the file layout for whichever architecture this project uses, or all
+    // of them when run outside a project. Resolve `{{...}}` placeholders against
+    // the project config when available so paths are directly usable.
+    let architectures = manifest.supportedArchitectures;
+    let configForPaths: OpenCraftConfig | undefined;
+    try {
+      configForPaths = await readConfig(process.cwd());
+      architectures = [configForPaths.architecture];
+    } catch {
+      // Not inside a project; show every variant with raw placeholders.
+    }
+
+    const resolvePath = (target: string) =>
+      configForPaths ? replacePlaceholders(target, configForPaths) : target;
+
+    console.log("\nPublic API (exports):");
+    if (!manifest.exports.length) console.log("  none");
+    for (const entry of manifest.exports) {
+      console.log(
+        `  ${entry.name} — ${resolvePath(entry.path)}${entry.description ? ` (${entry.description})` : ""}`,
+      );
+    }
 
     console.log("\nEnvironment variables:");
     if (!manifest.environmentVariables.length) console.log("  none");
@@ -203,16 +269,6 @@ program
       console.log(
         `  ${variable.name}${variable.required ? " (required)" : ""} — ${variable.description}`,
       );
-    }
-
-    // Show the file layout for whichever architecture this project uses, or all
-    // of them when run outside a project.
-    let architectures = manifest.supportedArchitectures;
-    try {
-      const config = await readConfig(process.cwd());
-      architectures = [config.architecture];
-    } catch {
-      // Not inside a project; show every variant.
     }
 
     for (const architecture of architectures) {
@@ -223,7 +279,7 @@ program
         const condition = entry.when
           ? ` [only when ${JSON.stringify(entry.when).replace(/["{}]/g, "")}]`
           : "";
-        console.log(`  ${entry.target}${condition}`);
+        console.log(`  ${resolvePath(entry.target)}${condition}`);
       }
     }
 

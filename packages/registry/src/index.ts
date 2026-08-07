@@ -19,6 +19,19 @@ const fileEntrySchema = z.object({
     .optional(),
 });
 
+const exportSchema = z.object({
+  name: z.string(),
+  path: z.string(),
+  description: z.string().optional(),
+});
+
+const governanceSchema = z.object({
+  owner: z.string().default("opencraft"),
+  classification: z.string().default("core"),
+  lifecycle: z.enum(["stable", "beta", "experimental", "deprecated"]).default("stable"),
+  reviewCadence: z.string().optional(),
+});
+
 export const manifestSchema = z.object({
   name: z.string().regex(/^[a-z0-9-]+$/),
   version: z.string(),
@@ -38,6 +51,12 @@ export const manifestSchema = z.object({
     )
     .default([]),
   files: z.record(architectureEnum, z.array(fileEntrySchema)),
+  exports: z.array(exportSchema).default([]),
+  governance: governanceSchema.default(() => ({
+    owner: "opencraft",
+    classification: "core",
+    lifecycle: "stable" as const,
+  })),
   instructions: z.array(z.string()).default([]),
 });
 

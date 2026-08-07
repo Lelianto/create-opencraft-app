@@ -31,6 +31,8 @@ const item = (
     environmentVariables: [],
     instructions: [],
     files,
+    exports: [],
+    governance: { owner: "opencraft", classification: "core", lifecycle: "stable" },
   },
 });
 
@@ -67,11 +69,47 @@ describe("registry", () => {
     );
   });
 
+  it("resolves export paths against the project config", () => {
+    const config = createDefaultConfig({ architecture: "atomic" });
+    const manifest = {
+      ...item("ok").manifest,
+      exports: [{ name: "getRole", path: "{{aliases.lib}}/roles.ts" }],
+    };
+    const parsed = manifestSchema.parse(manifest);
+    expect(replacePlaceholders(parsed.exports[0]!.path, config)).toBe("src/lib/roles.ts");
+  });
+
   it("validates a manifest and rejects a bad one", () => {
     const valid = item("ok").manifest;
     expect(() => manifestSchema.parse(valid)).not.toThrow();
     expect(() => manifestSchema.parse({ ...valid, supportedArchitectures: ["bogus"] })).toThrow();
     expect(() => manifestSchema.parse({ ...valid, name: "Bad Name!" })).toThrow();
+  });
+
+  it("defaults exports and governance when absent", () => {
+    const parsed = manifestSchema.parse(item("ok").manifest);
+    expect(parsed.exports).toEqual([]);
+    expect(parsed.governance).toMatchObject({ owner: "opencraft", classification: "core", lifecycle: "stable" });
+  });
+
+  it("accepts exports and governance metadata", () => {
+    const manifest = {
+      ...item("ok").manifest,
+      exports: [{ name: "getRole", path: "{{aliases.lib}}/roles.ts", description: "Role check" }],
+      governance: { owner: "opencraft-security", classification: "security", lifecycle: "beta" },
+    };
+    const parsed = manifestSchema.parse(manifest);
+    expect(parsed.exports[0]?.path).toBe("{{aliases.lib}}/roles.ts");
+    expect(parsed.governance.owner).toBe("opencraft-security");
+    expect(parsed.governance.lifecycle).toBe("beta");
+  });
+
+  it("rejects a governance lifecycle outside the enum", () => {
+    const manifest = {
+      ...item("ok").manifest,
+      governance: { owner: "opencraft", classification: "core", lifecycle: "banana" as never },
+    };
+    expect(() => manifestSchema.parse(manifest)).toThrow();
   });
 
   it("plans conditional files by backend and storage", async () => {

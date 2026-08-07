@@ -2,15 +2,52 @@
   "name": "input-validation",
   "version": "1.0.0",
   "description": "Shared Zod validation and safe JSON parsing",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
   "dependencies": [],
   "npmDependencies": {},
   "npmDevDependencies": {},
   "environmentVariables": [],
   "files": {
-    "atomic": [{ "source": "templates/validation.ts", "target": "{{aliases.lib}}/validation.ts" }],
-    "feature": [{ "source": "templates/validation.ts", "target": "{{aliases.lib}}/validation.ts" }],
-    "hybrid": [{ "source": "templates/validation.ts", "target": "{{aliases.lib}}/validation.ts" }]
+    "atomic": [
+      {
+        "source": "templates/validation.ts",
+        "target": "{{aliases.lib}}/validation.ts"
+      }
+    ],
+    "feature": [
+      {
+        "source": "templates/validation.ts",
+        "target": "{{aliases.lib}}/validation.ts"
+      }
+    ],
+    "hybrid": [
+      {
+        "source": "templates/validation.ts",
+        "target": "{{aliases.lib}}/validation.ts"
+      }
+    ]
   },
-  "instructions": []
+  "instructions": [],
+  "exports": [
+    {
+      "name": "idSchema",
+      "path": "{{aliases.lib}}/validation.ts",
+      "description": "UUID schema"
+    },
+    {
+      "name": "parseJson",
+      "path": "{{aliases.lib}}/validation.ts",
+      "description": "Safe JSON body parse"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "core",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }

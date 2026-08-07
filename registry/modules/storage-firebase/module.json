@@ -2,9 +2,17 @@
   "name": "storage-firebase",
   "version": "1.0.0",
   "description": "Firebase Storage server adapter",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
-  "supportedBackends": ["firebase"],
-  "dependencies": ["error-handling"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
+  "supportedBackends": [
+    "firebase"
+  ],
+  "dependencies": [
+    "error-handling"
+  ],
   "npmDependencies": {
     "firebase-admin": "14.2.0"
   },
@@ -36,5 +44,25 @@
       }
     ]
   },
-  "instructions": ["Keep Firebase Storage Rules deny-by-default and authorize access server-side."]
+  "instructions": [
+    "Keep Firebase Storage Rules deny-by-default and authorize access server-side."
+  ],
+  "exports": [
+    {
+      "name": "storage",
+      "path": "{{aliases.infrastructure}}/storage.ts",
+      "description": "Firebase storage adapter"
+    },
+    {
+      "name": "getSignedUrl",
+      "path": "{{aliases.infrastructure}}/storage.ts",
+      "description": "Signed read URL"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "core",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }

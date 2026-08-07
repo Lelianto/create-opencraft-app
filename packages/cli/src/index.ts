@@ -288,6 +288,7 @@ export function renderAgents(config: OpenCraftConfig): string {
     "- Do not change the selected architecture without explicit approval.",
     "- Do not add a dependency that duplicates one already installed.",
     `- Installed OpenCraft modules: ${modules.join(", ") || "none"}`,
+    `- Each module exposes a machine-readable public API: run \`opencraft list --json\` (or \`opencraft info <module>\`) to see its exports, then import from those paths instead of re-implementing infrastructure.`,
     "",
     "## Verify before finishing",
     "",

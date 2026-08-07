@@ -1,0 +1,81 @@
+{
+  "name": "deploy-docker",
+  "version": "1.0.0",
+  "description": "Self-hosted deployment: multi-stage standalone Dockerfile, .dockerignore, and compose.yaml",
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
+  "dependencies": [],
+  "npmDependencies": {},
+  "npmDevDependencies": {},
+  "environmentVariables": [],
+  "files": {
+    "atomic": [
+      {
+        "source": "templates/Dockerfile",
+        "target": "Dockerfile"
+      },
+      {
+        "source": "templates/dockerignore",
+        "target": ".dockerignore"
+      },
+      {
+        "source": "templates/compose.yaml",
+        "target": "compose.yaml"
+      }
+    ],
+    "feature": [
+      {
+        "source": "templates/Dockerfile",
+        "target": "Dockerfile"
+      },
+      {
+        "source": "templates/dockerignore",
+        "target": ".dockerignore"
+      },
+      {
+        "source": "templates/compose.yaml",
+        "target": "compose.yaml"
+      }
+    ],
+    "hybrid": [
+      {
+        "source": "templates/Dockerfile",
+        "target": "Dockerfile"
+      },
+      {
+        "source": "templates/dockerignore",
+        "target": ".dockerignore"
+      },
+      {
+        "source": "templates/compose.yaml",
+        "target": "compose.yaml"
+      }
+    ]
+  },
+  "exports": [
+    {
+      "name": "image",
+      "path": "compose.yaml",
+      "description": "Compose service definition (build + run)"
+    },
+    {
+      "name": "runtime",
+      "path": "Dockerfile",
+      "description": "Multi-stage standalone runtime"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "standard",
+    "lifecycle": "beta",
+    "reviewCadence": "quarterly"
+  },
+  "instructions": [
+    "The template already sets `output: 'standalone'` in next.config.ts; keep it for this module to work.",
+    "Build locally with `docker build -t <app> .` and run with `docker compose up`. Compose reads `.env.local` for provider keys.",
+    "For npm or yarn projects, adjust the dependency stage: replace `corepack enable pnpm && pnpm install --frozen-lockfile` with `npm ci` or `yarn install --frozen-lockfile` and the matching build command."
+  ]
+}

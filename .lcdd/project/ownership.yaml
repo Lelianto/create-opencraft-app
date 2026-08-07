@@ -1,0 +1,43 @@
+kind: ownership
+pack: security-pack
+version: 1
+description: Ownership metadata for security-pack.
+updated_at: 2026-01-01
+pack_owner: opencraft-security
+areas:
+  - name: baseline-governance
+    owner: opencraft
+    review_cadence: quarterly
+  - name: framework-conventions
+    owner: opencraft-web
+    review_cadence: quarterly
+  - name: security-controls
+    owner: opencraft-security
+    review_cadence: monthly
+  - name: application-security
+    owner: opencraft-security
+    review_cadence: monthly
+contexts:
+  - id: ctx-core-evidence-standard
+    owner: opencraft
+  - id: ctx-core-secrets-protection
+    owner: opencraft-security
+  - id: ctx-core-production-authority
+    owner: opencraft
+  - id: ctx-core-honest-claims
+    owner: opencraft
+  - id: ctx-nextjs-app-router
+    owner: opencraft-web
+  - id: ctx-nextjs-data-fetching
+    owner: opencraft-web
+  - id: ctx-nextjs-server-actions
+    owner: opencraft-security
+  - id: ctx-security-input-validation
+    owner: opencraft-security
+  - id: ctx-security-authz-server
+    owner: opencraft-security
+  - id: ctx-security-secrets
+    owner: opencraft-security
+  - id: ctx-security-dependency-hygiene
+    owner: opencraft-security
+escalation: Security incidents escalate to opencraft-security; risk acceptance requires cto.

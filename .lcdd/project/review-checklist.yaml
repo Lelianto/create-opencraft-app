@@ -1,0 +1,110 @@
+kind: review-checklist
+pack: testing-pack
+version: 1
+description: Testing review checklist.
+updated_at: 2026-01-01
+categories:
+  - name: Typing
+    items:
+      - id: chk-strict
+        check: "tsconfig has strict: true and no per-file // @ts-ignore additions."
+      - id: chk-any
+        check: "No new explicit `any`; boundaries use unknown with narrowing."
+      - id: chk-null
+        check: Nullable values are narrowed before access; no silent non-null assertions.
+  - name: Imports
+    items:
+      - id: chk-alias
+        check: Imports use configured aliases; no deep relative paths.
+      - id: chk-type-only
+        check: "Type-only imports use `import type`."
+  - name: Hygiene
+    items:
+      - id: chk-format
+        check: Formatting matches prettier; type-check and lint pass.
+  - name: Components
+    items:
+      - id: chk-function
+        check: New components are function components; no new class components.
+      - id: chk-composition
+        check: Components are small and compose; no single screen-wide monoliths.
+  - name: Hooks and state
+    items:
+      - id: chk-hooks
+        check: Hooks called at top level; dependency arrays complete.
+      - id: chk-derived
+        check: "Derived values computed during render, not mirrored in state."
+  - name: Behavior
+    items:
+      - id: chk-keys
+        check: List keys are stable and unique.
+      - id: chk-a11y
+        check: "Interactive elements have labels, focus order, and keyboard operability."
+  - name: Evidence
+    items:
+      - id: chk-evidence
+        check: Completion claims backed by fresh output; not-run recorded honestly.
+      - id: chk-claims
+        check: "No invented metrics, testimonials, or unsupported success claims."
+  - name: Security
+    items:
+      - id: chk-secrets
+        check: No secrets or server-only logic in client bundles.
+      - id: chk-headers
+        check: Security headers and CSP are present and reviewed.
+  - name: Authority
+    items:
+      - id: chk-authority
+        check: Production/destructive/external actions authorized by a human.
+  - name: Living context
+    items:
+      - id: chk-lcdd
+        check: .lcdd/ is current; changes obey active contexts.
+  - name: Router and rendering
+    items:
+      - id: chk-router
+        check: New routes use App Router; no pages/ additions.
+      - id: chk-server-first
+        check: "Server Components by default; 'use client' only where interactivity requires it."
+      - id: chk-fetch-cache
+        check: Every fetch declares its caching intent; static content is not accidentally dynamic.
+  - name: Mutations
+    items:
+      - id: chk-mutation-server
+        check: Mutations run in Server Actions/route handlers with server validation and authorization.
+      - id: chk-revalidate
+        check: Affected routes are revalidated after writes.
+  - name: Authentication and authorization
+    items:
+      - id: chk-authz-server
+        check: Authorization re-checked server-side; deny-by-default; 401/403 correct.
+      - id: chk-session
+        check: "Sessions/tokens are secure, scoped, and revocable."
+  - name: Input and injection
+    items:
+      - id: chk-input
+        check: Untrusted input validated at boundaries; fail closed.
+      - id: chk-encoding
+        check: Output encoded for HTML/URL/JSON; no injection sinks.
+  - name: Secrets and data
+    items:
+      - id: chk-secrets
+        check: "No secrets in repo, logs, fixtures, or client bundles."
+      - id: chk-data
+        check: Sensitive data encrypted at rest and in transit; least privilege.
+  - name: Supply chain
+    items:
+      - id: chk-lockfile
+        check: Lockfile committed; dependency scan clean or risk-accepted.
+  - name: Coverage
+    items:
+      - id: chk-risk
+        check: Test effort proportional to risk; high-risk paths have integration/E2E evidence.
+      - id: chk-regression
+        check: Bug fixes ship with a regression test that failed on the old behavior.
+  - name: Integrity
+    items:
+      - id: chk-real
+        check: Tests assert real behavior; no empty tests or skipped assertions.
+      - id: chk-ci
+        check: "CI gates on unit, integration, and E2E suites."

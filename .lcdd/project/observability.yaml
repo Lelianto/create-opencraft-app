@@ -1,0 +1,40 @@
+kind: observability
+pack: node-pack
+version: 1
+description: Observability practices for Node.js services.
+updated_at: 2026-01-01
+metrics:
+  - name: nextjs_page_ttfb
+    description: Time to first byte per route and cache state.
+    type: histogram
+  - name: nextjs_isr_regeneration
+    description: ISR regeneration count and duration.
+    type: histogram
+  - name: http_request_duration_seconds
+    description: Request latency by route and status.
+    type: histogram
+  - name: process_memory_bytes
+    description: Heap and RSS memory.
+    type: gauge
+logs:
+  - Server components log errors with request path and trace id; never log secrets.
+  - Client errors are captured with component stack when available.
+  - "Structured JSON logs with request id, service, and level."
+  - Log the request outcome and duration; never log secrets or PII.
+traces:
+  - Propagate trace context through fetch and server actions.
+  - Propagate trace context across service boundaries.
+alerts:
+  - name: page_errors
+    condition: "server-side 5xx rate above 1% for 5 minutes"
+    severity: high
+  - name: error_rate
+    condition: "http 5xx rate > 1% over 5 minutes"
+    severity: high
+slos:
+  - name: availability
+    target: "99.9%"
+    description: Uptime excluding planned maintenance.
+  - name: ttfb_p95
+    target: < 400ms
+    description: P95 time-to-first-byte for cacheable pages.

@@ -17,3 +17,6 @@ packages/cli/templates/
 packages/cli/registry/
 packages/registry/registry/
 
+# OpenCraft skills install receipt (regenerated on every install).
+.ai-skills-install.json
+

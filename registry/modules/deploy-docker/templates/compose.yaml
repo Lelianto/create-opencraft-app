@@ -1,0 +1,24 @@
+# Local containerized development for the generated app.
+# Production image: build with `docker build -t <app> .` and deploy the image.
+#
+# Environment variables come from `.env.local` by default (never commit secrets).
+# Add your provider keys there; the app reads them at runtime the same way as
+# `pnpm dev`. For production, inject env via your platform instead of this file.
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: opencraft-app:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

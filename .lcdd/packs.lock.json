@@ -1,0 +1,77 @@
+{
+  "schema": "https://opencraft.dev/schema/packs.lock/v1",
+  "algorithm": "sha256",
+  "generated_at": "2026-08-07T06:59:57Z",
+  "resolved": [
+    {
+      "name": "typescript-pack",
+      "version": "1.0.0",
+      "integrity": "sha256-505674846c3c7dbaf8f0cf283cafb9efe1ac136f7752bacff67960c30cae4e87",
+      "precedence": -1,
+      "extends": [],
+      "dependencies": [],
+      "deprecated": false
+    },
+    {
+      "name": "react-pack",
+      "version": "1.0.0",
+      "integrity": "sha256-3449c839fb61b7fa9dccdb8e427c93bec32ae931c52f8ba7e85d0127562825cc",
+      "precedence": 0,
+      "extends": [
+        "typescript-pack@^1"
+      ],
+      "dependencies": [],
+      "deprecated": false
+    },
+    {
+      "name": "core-pack",
+      "version": "1.0.0",
+      "integrity": "sha256-3759424c187114f163bdc3f016e53b7e4ab7a528e9fe84439b2d0c0190bc7b61",
+      "precedence": 1,
+      "extends": [],
+      "dependencies": [],
+      "deprecated": false
+    },
+    {
+      "name": "nextjs-pack",
+      "version": "1.0.0",
+      "integrity": "sha256-ca85f5ff95e5d1336ef5a10e37d85efbcaddaf8d0b9e35d0f727f313eb0e2368",
+      "precedence": 2,
+      "extends": [
+        "react-pack@^1",
+        "typescript-pack@^1"
+      ],
+      "dependencies": [
+        "node-pack@^1"
+      ],
+      "deprecated": false
+    },
+    {
+      "name": "security-pack",
+      "version": "1.0.0",
+      "integrity": "sha256-0d7c4bbcc4ba034d1bc751d8fbe98bdcdf1824f908fbc093cf4c34b234fb8565",
+      "precedence": 3,
+      "extends": [],
+      "dependencies": [],
+      "deprecated": false
+    },
+    {
+      "name": "testing-pack",
+      "version": "1.0.0",
+      "integrity": "sha256-ef4571599d1bc42180f5f1c96a46177d1b556139b46a8a66d6aac8476277b5c3",
+      "precedence": 4,
+      "extends": [],
+      "dependencies": [],
+      "deprecated": false
+    },
+    {
+      "name": "node-pack",
+      "version": "1.0.0",
+      "integrity": "sha256-5eeb87798f9bdea39f434a15d1128002661cb16ca21e822008bf838e4e199bb2",
+      "precedence": 5,
+      "extends": [],
+      "dependencies": [],
+      "deprecated": false
+    }
+  ]
+}

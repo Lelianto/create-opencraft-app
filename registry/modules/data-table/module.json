@@ -33,5 +33,23 @@
   },
   "instructions": [
     "Pass only already-sanitized, validated data to the table. Apply ownership/authorization filtering before rendering."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "DataTable",
+      "path": "{{aliases.components}}/molecules/data-table.tsx",
+      "description": "Typed data table"
+    },
+    {
+      "name": "DataTableColumn",
+      "path": "{{aliases.components}}/molecules/data-table.tsx",
+      "description": "Column descriptor"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "standard",
+    "lifecycle": "stable",
+    "reviewCadence": "yearly"
+  }
 }

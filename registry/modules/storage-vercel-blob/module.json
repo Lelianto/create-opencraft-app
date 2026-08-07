@@ -2,7 +2,11 @@
   "name": "storage-vercel-blob",
   "version": "1.0.0",
   "description": "Vercel Blob storage adapter",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
   "dependencies": [],
   "npmDependencies": {
     "@vercel/blob": "2.6.1"
@@ -37,5 +41,23 @@
   },
   "instructions": [
     "Vercel Blob public stores expose durable URLs; use private access and authenticated delivery for sensitive files."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "storage",
+      "path": "{{aliases.infrastructure}}/storage.ts",
+      "description": "Vercel Blob adapter"
+    },
+    {
+      "name": "readPrivate",
+      "path": "{{aliases.infrastructure}}/storage.ts",
+      "description": "Read a private blob"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "core",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }

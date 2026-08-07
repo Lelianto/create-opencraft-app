@@ -2,27 +2,77 @@
   "name": "error-handling",
   "version": "1.0.0",
   "description": "Typed AppError, safe client error boundary, and secure API error mapping",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
   "dependencies": [],
   "npmDependencies": {},
   "npmDevDependencies": {},
   "environmentVariables": [],
   "files": {
     "atomic": [
-      { "source": "templates/errors.ts", "target": "{{aliases.lib}}/errors.ts" },
-      { "source": "templates/error.tsx", "target": "src/app/error.tsx" }
+      {
+        "source": "templates/errors.ts",
+        "target": "{{aliases.lib}}/errors.ts"
+      },
+      {
+        "source": "templates/error.tsx",
+        "target": "src/app/error.tsx"
+      }
     ],
     "feature": [
-      { "source": "templates/errors.ts", "target": "{{aliases.lib}}/errors.ts" },
-      { "source": "templates/error.tsx", "target": "src/app/error.tsx" }
+      {
+        "source": "templates/errors.ts",
+        "target": "{{aliases.lib}}/errors.ts"
+      },
+      {
+        "source": "templates/error.tsx",
+        "target": "src/app/error.tsx"
+      }
     ],
     "hybrid": [
-      { "source": "templates/errors.ts", "target": "{{aliases.lib}}/errors.ts" },
-      { "source": "templates/error.tsx", "target": "src/app/error.tsx" }
+      {
+        "source": "templates/errors.ts",
+        "target": "{{aliases.lib}}/errors.ts"
+      },
+      {
+        "source": "templates/error.tsx",
+        "target": "src/app/error.tsx"
+      }
     ]
   },
   "instructions": [
     "Throw AppError with an allowed code; route handlers should map it with toApiFailure() so no stack trace reaches the client.",
     "Never log token, cookie, or raw secret values; log safe metadata only."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "AppError",
+      "path": "{{aliases.lib}}/errors.ts",
+      "description": "Typed error with safe code"
+    },
+    {
+      "name": "toAppError",
+      "path": "{{aliases.lib}}/errors.ts",
+      "description": "Collapse unknown errors"
+    },
+    {
+      "name": "isAppError",
+      "path": "{{aliases.lib}}/errors.ts",
+      "description": "Type guard"
+    },
+    {
+      "name": "logError",
+      "path": "{{aliases.lib}}/errors.ts",
+      "description": "Secret-safe logging"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "core",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }

@@ -31,5 +31,18 @@
       }
     ]
   },
-  "instructions": []
+  "instructions": [],
+  "exports": [
+    {
+      "name": "DashboardPage",
+      "path": "src/app/dashboard/page.tsx",
+      "description": "Dashboard shell"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "standard",
+    "lifecycle": "stable",
+    "reviewCadence": "yearly"
+  }
 }

@@ -2,9 +2,17 @@
   "name": "storage-supabase",
   "version": "1.0.0",
   "description": "Private-by-default Supabase Storage adapter",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
-  "supportedBackends": ["supabase"],
-  "dependencies": ["error-handling"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
+  "supportedBackends": [
+    "supabase"
+  ],
+  "dependencies": [
+    "error-handling"
+  ],
   "npmDependencies": {
     "@supabase/supabase-js": "2.112.0"
   },
@@ -41,5 +49,25 @@
       }
     ]
   },
-  "instructions": ["Keep the bucket private; issue short-lived signed URLs after authorization."]
+  "instructions": [
+    "Keep the bucket private; issue short-lived signed URLs after authorization."
+  ],
+  "exports": [
+    {
+      "name": "storage",
+      "path": "{{aliases.infrastructure}}/storage.ts",
+      "description": "Supabase storage adapter"
+    },
+    {
+      "name": "getSignedUrl",
+      "path": "{{aliases.infrastructure}}/storage.ts",
+      "description": "Signed read URL"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "core",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }

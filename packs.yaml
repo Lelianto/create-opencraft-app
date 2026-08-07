@@ -1,0 +1,8 @@
+schema: "https://opencraft.dev/schema/project-packs/v1"
+extends:
+  - "core-pack@^1"
+  - nextjs-pack
+  - security-pack
+  - testing-pack
+  - node-pack
+conflict_policy: fail

@@ -23,6 +23,7 @@
     "security-headers",
     "api-response",
     "input-validation",
-    "confirmation-dialog"
+    "confirmation-dialog",
+    "deploy-vercel"
   ]
 }

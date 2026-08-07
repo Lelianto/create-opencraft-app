@@ -29,17 +29,33 @@ not `^16.3.0` or `"latest"`). This is deliberate:
 When you need something newer, upgrade it explicitly (or wait for an OpenCraft update). If a major
 version change ever lands, you will see it as a deliberate, reviewed change — not a surprise in CI.
 
-## Agent skills
+## Agent skills & Living Context (LCDD)
 
-`opencraft-skills` is a required dependency. Its `postinstall` script copies a portable skill set
-into `.claude/skills`, `.cursor/skills`, `.codex/skills`, `.github/skills`, and `.agents/skills`
-so Claude Code, Cursor, Codex, GitHub Copilot, and other Agent Skills-compatible tools share the
-same delivery workflow.
+`opencraft-skills` is a required dependency. Its `postinstall` script does two things on every
+`{{runCommand}} install`:
 
-Installation happens automatically on every `{{runCommand}} install`. To re-run it manually:
+1. Copies a portable skill set into `.claude/skills`, `.cursor/skills`, `.codex/skills`,
+   `.github/skills`, and `.agents/skills` so Claude Code, Cursor, Codex, GitHub Copilot, and other
+   Agent Skills-compatible tools share the same delivery workflow.
+2. Applies **Living Context (LCDD)**: bootstraps the baseline `core-pack` and materializes a
+   Context Registry into `.lcdd/` (contexts, project knowledge, merged AI rules in
+   `.lcdd/ai/AGENTS.md`, and a `packs.yaml` declaration file at the project root).
+
+The baseline pack enforces the project's non-negotiables: the evidence standard, secrets
+protection, production authority, and honest claims. Extend the living context by declaring more
+packs (technology, framework, security, domain) in `packs.yaml` and re-materializing:
 
 ```bash
-npx opencraft-skills install --target all
+npx opencraft-packs packs add nextjs-pack --project .
+npx opencraft-packs packs add security-pack --project .
+npx opencraft-packs packs install --project .
+```
+
+`.lcdd/` is git-backed — commit it so the team and agents stay on the same, current page. To
+re-run the installation manually:
+
+```bash
+npx opencraft-skills install --target all --with-project-files
 ```
 
 ## AI agents: read AGENTS.md first
@@ -48,6 +64,10 @@ npx opencraft-skills install --target all
 the architecture, where code belongs, security rules, and the exact verification commands. **Any
 agent (or human) editing this project must read it before making changes** — it exists so the
 architecture is never rediscovered by accident.
+
+When `.lcdd/` is present, agents must also read `.lcdd/CONTEXT.md` and the machine-readable
+`.lcdd/contexts/` and `.lcdd/project/` records — they are the project's versioned, enforced Living
+Context. Do not edit generated `.lcdd/` records by hand; change `packs.yaml` and reinstall.
 
 ## Extending the project
 

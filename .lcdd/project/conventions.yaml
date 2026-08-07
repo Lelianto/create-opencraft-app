@@ -1,0 +1,61 @@
+kind: conventions
+pack: node-pack
+version: 1
+description: Node.js coding conventions.
+updated_at: 2026-01-01
+naming:
+  - id: conv-naming-files
+    rule: Files use kebab-case for modules and PascalCase for components and classes.
+    applies_to:
+      - "**/*.ts"
+      - "**/*.tsx"
+  - id: conv-naming-types
+    rule: Type aliases and interfaces use PascalCase; avoid the I-prefix convention.
+  - id: conv-react-components
+    rule: Component files are PascalCase; component names match their file names.
+  - id: conv-next-files
+    rule: "Colocate route, layout, loading, and error files in route segments; use their reserved file names."
+  - id: conv-node-file-case
+    rule: Module files use kebab-case; entrypoints match their package name.
+formatting:
+  - id: conv-format-prettier
+    rule: All source is formatted with prettier; no manual line wrapping decisions.
+  - id: conv-react-self-closing
+    rule: Use self-closing tags for components without children.
+  - id: conv-next-format
+    rule: Prettier with default Next.js settings; imports sorted.
+  - id: conv-node-format
+    rule: Source is formatted with prettier; line width 100.
+imports:
+  - id: conv-import-type
+    rule: "Use `import type` for type-only imports so the bundler can drop them."
+  - id: conv-import-order
+    rule: "Group external, then internal, then relative imports, separated by blank lines."
+  - id: conv-react-import-order
+    rule: "Import React/ReactDOM, external libs, then internal modules, then styles."
+  - id: conv-next-import
+    rule: "Import server-only modules with the `server-only` package where they must not reach the client."
+  - id: conv-node-import-type
+    rule: "Use `import type` for type-only imports in TypeScript modules."
+state:
+  - id: conv-state-exhaustive
+    rule: "Exhaustive switches use the `never` return type to catch unhandled unions."
+  - id: conv-react-derived
+    rule: Derive values during render instead of mirroring them in state.
+  - id: conv-react-lift
+    rule: Lift shared state to the closest common ancestor only when needed.
+  - id: conv-next-state
+    rule: UI state lives in components; durable state lives on the server; nothing durable is client-only.
+  - id: conv-node-async
+    rule: Top-level code is async-aware; avoid fire-and-forget promises unless errors are handled.
+structure:
+  - id: conv-structure-exports
+    rule: "Barrel files re-export public API only; never re-export types via `export *` from typed internals."
+  - id: conv-react-compose
+    rule: Compose small components; a component that renders more than one screen is a sign to split.
+  - id: conv-next-colocate
+    rule: Keep segment-specific code inside its route segment folder.
+  - id: conv-next-shared
+    rule: "Shared UI and logic live in src/components and src/lib, never in route segments."
+  - id: conv-node-separation
+    rule: Business logic is separated from HTTP transport handlers.

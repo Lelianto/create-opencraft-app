@@ -1,0 +1,29 @@
+{
+  "$schema": "https://opencraft.dev/schema/preset.schema.json",
+  "name": "self-hosted",
+  "description": "Full SaaS app (Supabase + Google auth) packaged for self-hosting: Dockerfile standalone, compose.yaml, security hardening, and audited CRUD.",
+  "architecture": "hybrid",
+  "backend": "supabase",
+  "auth": "google",
+  "storage": "supabase",
+  "modules": [
+    "auth-pages",
+    "protected-routes",
+    "role-permission",
+    "user-profile",
+    "dashboard",
+    "crud-example",
+    "data-table",
+    "pagination",
+    "search-filter",
+    "audit-log",
+    "error-handling",
+    "rate-limit",
+    "ssrf-protection",
+    "security-headers",
+    "api-response",
+    "input-validation",
+    "confirmation-dialog",
+    "deploy-docker"
+  ]
+}

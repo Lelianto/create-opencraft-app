@@ -83,6 +83,8 @@ jobs:
             modules: file-upload,user-profile
           - label: preset-saas
             preset: saas
+          - label: preset-self-hosted
+            preset: self-hosted
 
     steps:
       - name: Checkout Repository

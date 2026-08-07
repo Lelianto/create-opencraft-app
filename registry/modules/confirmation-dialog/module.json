@@ -2,7 +2,11 @@
   "name": "confirmation-dialog",
   "version": "1.0.0",
   "description": "Accessible reusable destructive action confirmation",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
   "dependencies": [],
   "npmDependencies": {},
   "npmDevDependencies": {},
@@ -27,5 +31,18 @@
       }
     ]
   },
-  "instructions": []
+  "instructions": [],
+  "exports": [
+    {
+      "name": "ConfirmationDialog",
+      "path": "{{dir.sharedComponents}}/confirmation-dialog.tsx",
+      "description": "Accessible destructive-action dialog"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "standard",
+    "lifecycle": "stable",
+    "reviewCadence": "yearly"
+  }
 }

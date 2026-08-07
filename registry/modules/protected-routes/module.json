@@ -2,9 +2,19 @@
   "name": "protected-routes",
   "version": "2.0.0",
   "description": "Next.js 16 proxy that refreshes sessions and redirects anonymous visitors away from app pages",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
-  "supportedBackends": ["supabase", "firebase"],
-  "dependencies": ["api-response", "error-handling"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
+  "supportedBackends": [
+    "supabase",
+    "firebase"
+  ],
+  "dependencies": [
+    "api-response",
+    "error-handling"
+  ],
   "npmDependencies": {},
   "npmDevDependencies": {},
   "environmentVariables": [],
@@ -14,14 +24,18 @@
         "source": "templates/proxy.supabase.ts",
         "target": "proxy.ts",
         "when": {
-          "backend": ["supabase"]
+          "backend": [
+            "supabase"
+          ]
         }
       },
       {
         "source": "templates/proxy.firebase.ts",
         "target": "proxy.ts",
         "when": {
-          "backend": ["firebase"]
+          "backend": [
+            "firebase"
+          ]
         }
       },
       {
@@ -34,14 +48,18 @@
         "source": "templates/proxy.supabase.ts",
         "target": "proxy.ts",
         "when": {
-          "backend": ["supabase"]
+          "backend": [
+            "supabase"
+          ]
         }
       },
       {
         "source": "templates/proxy.firebase.ts",
         "target": "proxy.ts",
         "when": {
-          "backend": ["firebase"]
+          "backend": [
+            "firebase"
+          ]
         }
       },
       {
@@ -54,14 +72,18 @@
         "source": "templates/proxy.supabase.ts",
         "target": "proxy.ts",
         "when": {
-          "backend": ["supabase"]
+          "backend": [
+            "supabase"
+          ]
         }
       },
       {
         "source": "templates/proxy.firebase.ts",
         "target": "proxy.ts",
         "when": {
-          "backend": ["firebase"]
+          "backend": [
+            "firebase"
+          ]
         }
       },
       {
@@ -74,5 +96,23 @@
     "proxy.ts replaces the deprecated middleware.ts convention in Next.js 16. If you still have middleware.ts, delete it.",
     "Edit isProtected() to list the page prefixes that require a session.",
     "Proxy is a UX layer only. Keep calling requireUser() in every Route Handler and Server Component."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "proxy",
+      "path": "proxy.ts",
+      "description": "Next.js 16 proxy: refresh session + redirect"
+    },
+    {
+      "name": "GET",
+      "path": "src/app/api/me/route.ts",
+      "description": "Current user route"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "core",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }

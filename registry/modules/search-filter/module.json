@@ -33,5 +33,18 @@
   },
   "instructions": [
     "Search terms are user input: never inject them into queries directly, use parameterized/SDK queries and apply length limits."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "SearchFilter",
+      "path": "{{aliases.components}}/molecules/search-filter.tsx",
+      "description": "Debounced URL search input"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "standard",
+    "lifecycle": "stable",
+    "reviewCadence": "yearly"
+  }
 }

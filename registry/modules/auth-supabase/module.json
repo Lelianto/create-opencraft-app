@@ -2,9 +2,17 @@
   "name": "auth-supabase",
   "version": "1.0.0",
   "description": "Server-verified Supabase authentication",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
-  "supportedBackends": ["supabase"],
-  "dependencies": ["error-handling"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
+  "supportedBackends": [
+    "supabase"
+  ],
+  "dependencies": [
+    "error-handling"
+  ],
   "npmDependencies": {
     "@supabase/ssr": "0.12.4",
     "@supabase/supabase-js": "2.112.0"
@@ -61,5 +69,28 @@
   },
   "instructions": [
     "Enable Google in Supabase Authentication providers, register the /auth/callback URL, and set NEXT_PUBLIC_APP_URL."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "getCurrentUser",
+      "path": "{{aliases.infrastructure}}/auth.ts",
+      "description": "Server-side session lookup"
+    },
+    {
+      "name": "requireUser",
+      "path": "{{aliases.infrastructure}}/auth.ts",
+      "description": "Server-side session enforcement"
+    },
+    {
+      "name": "GET",
+      "path": "src/app/auth/callback/route.ts",
+      "description": "OAuth callback route"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "core",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }

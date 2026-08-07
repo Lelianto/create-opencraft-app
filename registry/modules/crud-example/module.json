@@ -2,28 +2,60 @@
   "name": "crud-example",
   "version": "2.0.0",
   "description": "Reference Product CRUD: server-verified auth, ownership checks, search, pagination, and provider-backed persistence",
-  "supportedArchitectures": ["atomic", "feature", "hybrid"],
-  "supportedBackends": ["supabase", "firebase"],
-  "dependencies": ["input-validation", "api-response", "error-handling", "confirmation-dialog"],
+  "supportedArchitectures": [
+    "atomic",
+    "feature",
+    "hybrid"
+  ],
+  "supportedBackends": [
+    "supabase",
+    "firebase"
+  ],
+  "dependencies": [
+    "input-validation",
+    "api-response",
+    "error-handling",
+    "confirmation-dialog"
+  ],
   "npmDependencies": {},
   "npmDevDependencies": {},
   "environmentVariables": [],
   "files": {
     "atomic": [
-      { "source": "templates/schema.ts", "target": "{{dir.domain}}/products/schema.ts" },
+      {
+        "source": "templates/schema.ts",
+        "target": "{{dir.domain}}/products/schema.ts"
+      },
       {
         "source": "templates/repository.supabase.ts",
         "target": "{{dir.domain}}/products/repository.ts",
-        "when": { "backend": ["supabase"] }
+        "when": {
+          "backend": [
+            "supabase"
+          ]
+        }
       },
       {
         "source": "templates/repository.firebase.ts",
         "target": "{{dir.domain}}/products/repository.ts",
-        "when": { "backend": ["firebase"] }
+        "when": {
+          "backend": [
+            "firebase"
+          ]
+        }
       },
-      { "source": "templates/route.ts", "target": "src/app/api/products/route.ts" },
-      { "source": "templates/route-detail.ts", "target": "src/app/api/products/[id]/route.ts" },
-      { "source": "templates/page.tsx", "target": "src/app/products/page.tsx" },
+      {
+        "source": "templates/route.ts",
+        "target": "src/app/api/products/route.ts"
+      },
+      {
+        "source": "templates/route-detail.ts",
+        "target": "src/app/api/products/[id]/route.ts"
+      },
+      {
+        "source": "templates/page.tsx",
+        "target": "src/app/products/page.tsx"
+      },
       {
         "source": "templates/product-form.tsx",
         "target": "{{aliases.components}}/products/product-form.tsx"
@@ -35,29 +67,57 @@
       {
         "source": "templates/products.sql",
         "target": "supabase/products.sql",
-        "when": { "backend": ["supabase"] }
+        "when": {
+          "backend": [
+            "supabase"
+          ]
+        }
       },
       {
         "source": "templates/firestore.rules",
         "target": "firestore.rules",
-        "when": { "backend": ["firebase"] }
+        "when": {
+          "backend": [
+            "firebase"
+          ]
+        }
       }
     ],
     "feature": [
-      { "source": "templates/schema.ts", "target": "{{dir.domain}}/products/schema.ts" },
+      {
+        "source": "templates/schema.ts",
+        "target": "{{dir.domain}}/products/schema.ts"
+      },
       {
         "source": "templates/repository.supabase.ts",
         "target": "{{dir.domain}}/products/repository.ts",
-        "when": { "backend": ["supabase"] }
+        "when": {
+          "backend": [
+            "supabase"
+          ]
+        }
       },
       {
         "source": "templates/repository.firebase.ts",
         "target": "{{dir.domain}}/products/repository.ts",
-        "when": { "backend": ["firebase"] }
+        "when": {
+          "backend": [
+            "firebase"
+          ]
+        }
       },
-      { "source": "templates/route.ts", "target": "src/app/api/products/route.ts" },
-      { "source": "templates/route-detail.ts", "target": "src/app/api/products/[id]/route.ts" },
-      { "source": "templates/page.tsx", "target": "src/app/products/page.tsx" },
+      {
+        "source": "templates/route.ts",
+        "target": "src/app/api/products/route.ts"
+      },
+      {
+        "source": "templates/route-detail.ts",
+        "target": "src/app/api/products/[id]/route.ts"
+      },
+      {
+        "source": "templates/page.tsx",
+        "target": "src/app/products/page.tsx"
+      },
       {
         "source": "templates/product-form.tsx",
         "target": "{{aliases.components}}/products/product-form.tsx"
@@ -69,29 +129,57 @@
       {
         "source": "templates/products.sql",
         "target": "supabase/products.sql",
-        "when": { "backend": ["supabase"] }
+        "when": {
+          "backend": [
+            "supabase"
+          ]
+        }
       },
       {
         "source": "templates/firestore.rules",
         "target": "firestore.rules",
-        "when": { "backend": ["firebase"] }
+        "when": {
+          "backend": [
+            "firebase"
+          ]
+        }
       }
     ],
     "hybrid": [
-      { "source": "templates/schema.ts", "target": "{{dir.domain}}/products/schema.ts" },
+      {
+        "source": "templates/schema.ts",
+        "target": "{{dir.domain}}/products/schema.ts"
+      },
       {
         "source": "templates/repository.supabase.ts",
         "target": "{{dir.domain}}/products/repository.ts",
-        "when": { "backend": ["supabase"] }
+        "when": {
+          "backend": [
+            "supabase"
+          ]
+        }
       },
       {
         "source": "templates/repository.firebase.ts",
         "target": "{{dir.domain}}/products/repository.ts",
-        "when": { "backend": ["firebase"] }
+        "when": {
+          "backend": [
+            "firebase"
+          ]
+        }
       },
-      { "source": "templates/route.ts", "target": "src/app/api/products/route.ts" },
-      { "source": "templates/route-detail.ts", "target": "src/app/api/products/[id]/route.ts" },
-      { "source": "templates/page.tsx", "target": "src/app/products/page.tsx" },
+      {
+        "source": "templates/route.ts",
+        "target": "src/app/api/products/route.ts"
+      },
+      {
+        "source": "templates/route-detail.ts",
+        "target": "src/app/api/products/[id]/route.ts"
+      },
+      {
+        "source": "templates/page.tsx",
+        "target": "src/app/products/page.tsx"
+      },
       {
         "source": "templates/product-form.tsx",
         "target": "{{aliases.components}}/products/product-form.tsx"
@@ -103,12 +191,20 @@
       {
         "source": "templates/products.sql",
         "target": "supabase/products.sql",
-        "when": { "backend": ["supabase"] }
+        "when": {
+          "backend": [
+            "supabase"
+          ]
+        }
       },
       {
         "source": "templates/firestore.rules",
         "target": "firestore.rules",
-        "when": { "backend": ["firebase"] }
+        "when": {
+          "backend": [
+            "firebase"
+          ]
+        }
       }
     ]
   },
@@ -116,5 +212,58 @@
     "Supabase: run supabase/products.sql in the SQL editor to create the table, indexes, and Row Level Security policies.",
     "Firebase: deploy firestore.rules with `firebase deploy --only firestore:rules`, and create a composite index on (ownerId, createdAt) when prompted.",
     "Ownership is enforced in the repository AND in provider rules. Keep both when you adapt this to your own entity."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "productInputSchema",
+      "path": "{{dir.domain}}/products/schema.ts",
+      "description": "Zod input schema"
+    },
+    {
+      "name": "Product",
+      "path": "{{dir.domain}}/products/schema.ts",
+      "description": "Product entity"
+    },
+    {
+      "name": "listProducts",
+      "path": "{{dir.domain}}/products/repository.ts",
+      "description": "Owner-scoped list"
+    },
+    {
+      "name": "findProduct",
+      "path": "{{dir.domain}}/products/repository.ts",
+      "description": "Owner-scoped find"
+    },
+    {
+      "name": "createProduct",
+      "path": "{{dir.domain}}/products/repository.ts",
+      "description": "Owner-scoped create"
+    },
+    {
+      "name": "updateProduct",
+      "path": "{{dir.domain}}/products/repository.ts",
+      "description": "Owner-scoped update"
+    },
+    {
+      "name": "deleteProduct",
+      "path": "{{dir.domain}}/products/repository.ts",
+      "description": "Owner-scoped delete"
+    },
+    {
+      "name": "GET/POST",
+      "path": "src/app/api/products/route.ts",
+      "description": "List + create route handlers"
+    },
+    {
+      "name": "GET/PATCH/DELETE",
+      "path": "src/app/api/products/[id]/route.ts",
+      "description": "Detail route handlers"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft",
+    "classification": "standard",
+    "lifecycle": "stable",
+    "reviewCadence": "yearly"
+  }
 }

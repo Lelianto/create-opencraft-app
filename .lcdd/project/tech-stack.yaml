@@ -1,0 +1,55 @@
+kind: tech-stack
+pack: node-pack
+version: 1
+description: Baseline Node.js runtime stack.
+updated_at: 2026-01-01
+entries:
+  - name: TypeScript
+    role: language
+    version: 5.x
+    alternatives:
+      - JavaScript with JSDoc
+    rationale: Static typing is the baseline for safe refactoring and AI-assisted development.
+  - name: eslint
+    role: linting
+    version: 9.x
+    rationale: Rule-driven enforcement of typing and import hygiene.
+  - name: prettier
+    role: formatting
+    rationale: Deterministic formatting avoids style churn in diffs.
+  - name: vitest
+    role: unit-test-runner
+    rationale: "Fast, TS-native test runner."
+  - name: Next.js
+    role: framework
+    version: 15.x
+    alternatives:
+      - Remix
+      - Vite + React
+      - Astro
+    rationale: "Integrated SSR, ISR, server actions, and deployment targets."
+  - name: React
+    role: ui-library
+    version: 19.x
+    rationale: Server and client components in a single model.
+  - name: Tailwind CSS
+    role: styling
+    rationale: Utility-first styling with design-token discipline.
+  - name: Node.js
+    role: runtime
+    version: ">=20 LTS"
+    alternatives:
+      - Bun
+      - Deno
+    rationale: "LTS alignment, ecosystem maturity, and container image availability."
+  - name: npm
+    role: package-manager
+    rationale: Workspaces and lockfile support.
+pinned_versions:
+  typescript: ">=5.4"
+  node: ">=20"
+  next: ^15
+  react: ^19
+language: TypeScript
+runtime: Node.js LTS
+framework: Next.js App Router

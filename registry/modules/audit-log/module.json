@@ -33,5 +33,23 @@
   },
   "instructions": [
     "The default sink prints to stdout only; connect a durable store for production. It redacts known secret keys before writing, but never pass secrets in metadata."
-  ]
+  ],
+  "exports": [
+    {
+      "name": "writeAuditLog",
+      "path": "{{aliases.infrastructure}}/audit-log.ts",
+      "description": "Write a redacted audit entry"
+    },
+    {
+      "name": "AuditEntry",
+      "path": "{{aliases.infrastructure}}/audit-log.ts",
+      "description": "Audit entry shape"
+    }
+  ],
+  "governance": {
+    "owner": "opencraft-security",
+    "classification": "security",
+    "lifecycle": "stable",
+    "reviewCadence": "quarterly"
+  }
 }
