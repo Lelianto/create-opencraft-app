@@ -1,5 +1,49 @@
 # @antihero/cli
 
+## 0.4.0
+
+### Minor Changes
+
+- 3a31e71: feat: bump opencraft-skills to 1.3.0 and apply Living Context (LCDD) in generated projects
+
+  - Require `opencraft-skills@1.3.0` in every generated project.
+  - Change the `postinstall` to `opencraft-skills install --target all --with-project-files` so every generated project bootstraps the baseline `core-pack` and materializes the `.lcdd/` Context Registry (contexts, project knowledge, merged AI rules) plus `packs.yaml`.
+  - Document the LCDD workflow — extending `packs.yaml` with `npx opencraft-packs packs add`, re-materializing with `packs install`, and committing `.lcdd/` — in the generated-project README.
+
+- 3a31e71: feat: machine-readable module contracts, deployment modules, and Living Context (LCDD) integration
+
+  - Add `exports` (public API contract) and `governance` (owner/classification/lifecycle) metadata to the module manifest schema, populate it across all modules, and enforce it in `scripts/validate-registry.mjs`.
+  - Surface the contract in the CLI: `opencraft info <module>` shows exports + governance, and `opencraft list --json` emits resolved export paths for every module for AI agents.
+  - Add `deploy-docker` module: multi-stage standalone `Dockerfile`, `.dockerignore`, and `compose.yaml` with healthcheck.
+  - Add `deploy-vercel` module: `vercel.json` + a PR preview workflow (type-check, lint, test, build).
+  - Add the `self-hosted` preset (full SaaS packaged for Docker) and include `deploy-vercel` in the `saas` preset.
+  - Set `output: "standalone"` in the base `next.config.ts` so generated projects are deployable as a standalone server or container.
+  - Extend the `generated-apps` CI matrix with the `self-hosted` preset.
+  - Document opencraft-skills and LCDD (how they govern generated projects) and the machine-readable module contract in the README.
+
+- c39032a: feat: ship validated product presets, an app shell with dark mode, and require opencraft-skills in every generated project
+
+  - Add `registry/presets/*.json` (`saas`, `content`, `app-mobile-api`, `blog`) with a Zod-validated `presetSchema` and `loadPresets`/`loadPreset` loaders in `@antihero/registry`.
+  - Add `create --preset <name>` and `--preset list` to `create-opencraft-app`; a preset pins architecture/backend/auth/storage/modules while explicit flags still win.
+  - Give the `nextjs-base` template an app shell: `SiteHeader`, `SiteFooter`, `ThemeProvider` (next-themes) and a dark-mode toggle, plus a richer landing page (hero, features, CTA).
+  - Require `opencraft-skills@1.2.0` in every generated project via a `postinstall` script so Agent Skills are installed on `pnpm install`.
+  - Add three more presets: `firebase-saas`, `admin-tool`, and `portfolio`, bringing the total to seven named presets.
+  - Expand the `generated-apps` CI matrix to cover atomic, feature, backend-less, storage-supabase, and the full `saas` preset, so every architecture and every preset is really built.
+  - Add behavioural template tests for `rate-limit`, the strict CSP nonce, `safeFetch` SSRF defences, the Supabase crud repository, and structural validation of `products.sql` RLS + `firestore.rules`.
+  - Add `registry/schemas/module.schema.json`, the JSON Schema referenced by `CONTRIBUTING.md` that was previously missing.
+
+### Patch Changes
+
+- 90ac2b2: feat: add the auth-pages module and include it in the saas and app-mobile-api presets
+
+  - New `auth-pages` module: a working sign-in page (`/auth/signin`) that renders the provider's `GoogleSignIn` and redirects authenticated visitors to the app, plus a backend-specific `SignOutButton`.
+  - Add the module to the `saas` and `app-mobile-api` presets so auth-enabled projects ship with a functional login/logout loop.
+
+- Updated dependencies [90ac2b2]
+- Updated dependencies [3a31e71]
+- Updated dependencies [c39032a]
+  - @antihero/registry@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes
