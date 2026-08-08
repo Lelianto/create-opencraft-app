@@ -1,6 +1,11 @@
 # OpenCraft
 
-![npm](https://img.shields.io/npm/v/create-opencraft-app?color=cb3837) ![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg) ![Modules](https://img.shields.io/badge/modules-27-6366f1) ![CI](https://github.com/Lelianto/create-opencraft-app/actions/workflows/ci.yml/badge.svg)
+<p align="center">
+  <a href="https://www.npmjs.com/package/create-opencraft-app"><img src="https://img.shields.io/npm/v/create-opencraft-app?color=cb3837" alt="npm" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-22c55e.svg" alt="License: MIT" /></a>
+  <a href="registry/modules"><img src="https://img.shields.io/badge/modules-27-6366f1" alt="Modules" /></a>
+  <a href="https://github.com/Lelianto/create-opencraft-app/actions/workflows/ci.yml"><img src="https://github.com/Lelianto/create-opencraft-app/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+</p>
 
 **Production-ready, modular Next.js project generator.** Install once, ship a secure, deployable product — never rewrite authentication, storage, validation, or security rules again.
 
