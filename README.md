@@ -1,4 +1,4 @@
-# OpenCraft
+<h1 align="center">create-opencraft-app</h1>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/create-opencraft-app"><img src="https://img.shields.io/npm/v/create-opencraft-app?color=cb3837" alt="npm" /></a>
